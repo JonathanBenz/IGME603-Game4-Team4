@@ -370,9 +370,37 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1926025030875435748, guid: eadf4299959eaad44b2f346f4e71863c, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064770004471503721, guid: eadf4299959eaad44b2f346f4e71863c, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3781838767939175276, guid: eadf4299959eaad44b2f346f4e71863c, type: 3}
+      propertyPath: m_Color.b
+      value: 0.44705886
+      objectReference: {fileID: 0}
+    - target: {fileID: 3781838767939175276, guid: eadf4299959eaad44b2f346f4e71863c, type: 3}
+      propertyPath: m_Color.g
+      value: 0.37647063
+      objectReference: {fileID: 0}
+    - target: {fileID: 3781838767939175276, guid: eadf4299959eaad44b2f346f4e71863c, type: 3}
+      propertyPath: m_Color.r
+      value: 0.43921572
+      objectReference: {fileID: 0}
+    - target: {fileID: 3905819213947575495, guid: eadf4299959eaad44b2f346f4e71863c, type: 3}
+      propertyPath: m_Colors.m_SelectedColor.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5538608974313711466, guid: eadf4299959eaad44b2f346f4e71863c, type: 3}
       propertyPath: m_Name
       value: MainMenuCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 5975540460377699725, guid: eadf4299959eaad44b2f346f4e71863c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
