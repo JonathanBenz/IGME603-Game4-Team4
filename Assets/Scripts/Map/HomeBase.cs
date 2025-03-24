@@ -40,6 +40,6 @@ public class HomeBase : MonoBehaviour
     /// </summary>
     public void OnPointerClick()
     {
-        this.transform.parent.gameObject.GetComponent<Canvas>().enabled = false;
+        this.transform.parent.gameObject.SetActive(false); //GetComponent<Canvas>().enabled = false;
     }
 }
