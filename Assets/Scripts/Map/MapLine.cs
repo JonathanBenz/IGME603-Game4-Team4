@@ -26,11 +26,20 @@ public class MapLine : MonoBehaviour
     /// <param name="length"></param>
     public void SetLine(Vector3 length)
     {
+        // Need to convert to screen space and take canvas scale into account
         targetCanvasPosition = RectTransformUtility.WorldToScreenPoint(Camera.main, length);
         Vector2 scaleReference = new Vector2(canvasScaler.referenceResolution.x / Screen.width, canvasScaler.referenceResolution.y / Screen.height);
         targetCanvasPosition.Scale(scaleReference);
-        width = targetCanvasPosition.x;
-        rectTransform.sizeDelta = new Vector2(width, height);
+
+        // IDK WHY the world to screen conversion doesn't work correctly ???
+        width = targetCanvasPosition.x - 960f; // Random fudge number to get the horizontal component of the line close to matching.
         rectTransform.right = length;
+
+        // Need to calculate angle and then divide the width by cos in order to get the proper hypotenuse length
+        float angle = Vector2.SignedAngle(Vector2.right, (Vector2)length);
+        angle *= Mathf.Deg2Rad;
+        width /= Mathf.Cos(angle);
+
+        rectTransform.sizeDelta = new Vector2(width, height);
     }
 }

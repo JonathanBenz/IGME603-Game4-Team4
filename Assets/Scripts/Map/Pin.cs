@@ -57,9 +57,4 @@ public class Pin : MonoBehaviour
         line.GetComponent<MapLine>().SetLine(lengthBetween);
         isOccupied = true;
     }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawLine(this.transform.GetComponent<RectTransform>().position, FindObjectOfType<HomeBase>().transform.GetComponent<RectTransform>().position);
-    }
 }
