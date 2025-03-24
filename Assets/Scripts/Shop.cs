@@ -6,86 +6,72 @@ public class Shop : MonoBehaviour
 {
     public int premiumMoney = 0;
     public int money = 100;
-    public int scouts = 5;
-    public int flashlights;
-    public int shovels;
-    public int foodWater;
-
+    public int availableScouts = 5;
     public TMP_Text moneyText;
     public TMP_Text PremiumMoneyText;
     public TMP_Text availableScoutsText;
-    public TMP_Text flashlightsText;
-    public TMP_Text shovelsText;
-    public TMP_Text foodWaterText;
-    
-    public Dictionary<string, int> shopItems = new Dictionary<string, int>();
 
+    [System.Serializable]
+    public class ShopItem
+    {
+        public string itemName;
+        public int price;
+    }
+
+    public List<ShopItem> shopItems = new List<ShopItem>(); 
 
     void Start()
     {
         UpdateText();
-
-        shopItems.Add("Scout", 10);
-        shopItems.Add("Flashlight", 5);
-        shopItems.Add("Shovel", 5);
-        shopItems.Add("Food/Water", 5);
-        
     }
 
-    public void BuyItem(string itemName)
+    public void BuyScout()
     {
-        if (shopItems.ContainsKey(itemName))
+        ShopItem scout = shopItems.Find(item => item.itemName == "Scout");
+        if (scout != null)
         {
-            KeyValuePair<string, int> item = new KeyValuePair<string, int>(itemName, shopItems[itemName]);
+            BuyItem(scout);
+            UpdateText();
+        }
+    }
 
-            if (money >= item.Value)
+    public void BuyItem(ShopItem item)
+    {
+        if (money >= item.price)
+        {
+            Debug.Log("Bought: " + item.itemName);
+
+            switch (item.itemName)
             {
-                Debug.Log("Bought: " + item.Key);
-
-                switch (item.Key)
-                {
-                    case "Scout":
-                        scouts++;
-                        break;
-                    case "Flashlight":
-                        flashlights++;
-                        break;
-                    case "Shovel":
-                        shovels++;
-                        break;
-                    case "Food/Water":
-                        foodWater++;
-                        break;
-                    /*
-                    case "":
-                        availableScouts++;
-                        break;
-                    */
-                    default:
-                        break;
-                }
-
-                money -= item.Value;
-                UpdateText();
+                case "Scout":
+                    availableScouts++;
+                    break;
+                /*
+                case "":
+                    availableScouts++;
+                    break;
+                */
+                default:
+                    break;
             }
-            else
-            {
-                Debug.Log("Not enough money!");
-            }
+
+            money -= item.price;
+            UpdateText();
         }
         else
         {
-            Debug.Log("Item not found!");
+            Debug.Log("Not enough money!");
         }
+
+        
+
+
     }
 
     void UpdateText()
     {
         moneyText.text = "Money: " + money;
         PremiumMoneyText.text = "Premium: " + premiumMoney;
-        availableScoutsText.text = "In: " + scouts;
-        flashlightsText.text = "Flashlights: " + flashlights;
-        shovelsText.text = "Shovels: " + shovels;
-        foodWaterText.text = "Food/Water: " + foodWater;
+        availableScoutsText.text = "Available: " + availableScouts;
     }
 }
