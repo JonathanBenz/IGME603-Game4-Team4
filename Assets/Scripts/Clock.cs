@@ -53,6 +53,9 @@ public class Clock : MonoBehaviour
         StartCoroutine(DayPassedTextAnim());
     }
 
+    /// <summary>
+    /// Scale up, move up, fade away text
+    /// </summary>
     IEnumerator DayPassedTextAnim()
     {
         dayPassedTextGO.SetActive(true);

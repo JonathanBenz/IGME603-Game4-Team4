@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class Shop : MonoBehaviour
 {
     public int premiumMoney = 0;
-    public int money = 100;
+    public int money = 1000;
     public int scouts = 5;
     public int flashlights;
     public int shovels;
@@ -19,7 +19,6 @@ public class Shop : MonoBehaviour
     public TMP_Text foodWaterText;
     
     public Dictionary<string, int> shopItems = new Dictionary<string, int>();
-
 
     void Start()
     {
