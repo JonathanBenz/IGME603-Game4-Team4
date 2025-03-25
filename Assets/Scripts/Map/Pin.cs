@@ -7,17 +7,27 @@ using UnityEngine;
 /// </summary>
 public class Pin : MonoBehaviour
 {
+    [SerializeField] SOPinLocation locationInfo;
     [SerializeField] GameObject mapLineGO;
     GameObject pinLight;
+    PopUp popUp;
+    int difficultyLevel;
+    static bool popUpActive; // static so that it applies across all pins
     bool isOccupied;
-    
+
+    public int DifficultyLevel { get { return difficultyLevel; } }
+    public bool PopUpActive { set { popUpActive = value; } }
+
     private void Awake()
     {
         pinLight = transform.GetChild(0).gameObject;
+        popUp = FindObjectOfType<PopUp>();
     }
     private void Start()
     {
         pinLight.SetActive(false);
+        difficultyLevel = CalculateRandomDifficulty();
+        popUp.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -25,7 +35,7 @@ public class Pin : MonoBehaviour
     /// </summary>
     public void OnPointerEnter()
     {
-        if (isOccupied) return;
+        if (isOccupied || popUpActive) return;
 
         transform.localScale = new Vector3(1.5f, 1.5f, 1f);
         pinLight.SetActive(true);
@@ -41,12 +51,22 @@ public class Pin : MonoBehaviour
     }
 
     /// <summary>
-    /// When the Pin is clicked, draw a Map Line
+    /// When the Pin is clicked, activate and set the Pop Up
     /// </summary>
     public void OnPointerClick()
     {
-        if (isOccupied) return;
+        if (isOccupied || popUpActive) return;
 
+        popUp.gameObject.SetActive(true);
+        popUp.SetupPopup(locationInfo, this);
+        popUpActive = true;
+    }
+
+    /// <summary>
+    /// If the player sends scouts to this pin, set as occupied and draw a line to the pin.
+    /// </summary>
+    public void SetAsOccupied()
+    {
         Transform baseTransform = FindObjectOfType<HomeBase>().transform;
         Vector3 basePosition = baseTransform.GetComponent<RectTransform>().position;
         //Vector3 basePosition = baseTransform.TransformPoint(Vector3.zero);
@@ -56,5 +76,10 @@ public class Pin : MonoBehaviour
         //Vector3 lengthBetween = this.transform.TransformPoint(Vector3.zero) - basePosition;
         line.GetComponent<MapLine>().SetLine(lengthBetween);
         isOccupied = true;
+    }
+
+    private int CalculateRandomDifficulty()
+    {
+        return Random.Range(1, 6);
     }
 }
