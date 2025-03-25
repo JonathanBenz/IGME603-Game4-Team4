@@ -5,60 +5,61 @@ using System.Collections.Generic;
 public class SubstitutionPuzzleManager : MonoBehaviour
 {
     [Header("Puzzle Settings")]
-    [SerializeField] private string secretMessage = "HELLO UNITY";
+    [Tooltip("List of multiple secret phrases to solve in sequence.")]
+    [SerializeField]
+    private string[] secretPhrases = {
+        "VENI VIDI VICI",
+        "EUREKA",
+        "CARPE DIEM"
+    };
 
     // Letters that should be automatically solved in the grid from the start
     [SerializeField] private char[] preRevealedPlainLetters = { 'H', 'E', 'L' };
 
-    // Where we display the encrypted puzzle text
     [Header("UI References")]
-    [SerializeField] private TMP_Text encryptedText;
-    // Where we display the partial-decrypted text in real time
-    [SerializeField] private TMP_Text partialDecryptedText;
-    // Feedback label (e.g., ※Correct!§ or ※Try again!§)
-    [SerializeField] private TMP_Text feedbackText;
+    [SerializeField] private TMP_Text encryptedText;        // Displays the scrambled text of the CURRENT phrase
+    [SerializeField] private TMP_Text partialDecryptedText; // Displays partial decryption as the player guesses
+    [SerializeField] private TMP_Text feedbackText;         // "Correct!" / "Keep trying!" messages
 
-    // 26 input fields for letters A每Z, each for the user＊s guess:
-    // index 0 -> scrambled 'A', index 1 -> scrambled 'B', etc.
+    // 26 input fields for letters A每Z. Index 0 = scrambled 'A', 1 = scrambled 'B', ...
     [SerializeField] private TMP_InputField[] letterMappingInputs = new TMP_InputField[26];
 
-    // The random encryption map: plain -> scrambled
+    // A random cipher mapping plain->scrambled. We'll keep it for all phrases.
     private Dictionary<char, char> encryptMap = new Dictionary<char, char>();
-    // The user＊s guess for how scrambled letters map back to plain
+    // The player's guess map for scrambled->plain. 
+    // Key = scrambled letter, Value = guessed plain letter (or '_' if unknown).
     private Dictionary<char, char> playerGuessMap = new Dictionary<char, char>();
 
-    // The scrambled version of secretMessage
-    private string scrambledMessage = "";
+    // Which phrase we＊re currently on
+    private int currentPhraseIndex = 0;
+
+    // The scrambled text of the current phrase
+    private string currentScrambledPhrase = "";
 
     void Start()
     {
-        InitializePuzzle();
-        feedbackText.text = "";
+        InitializeMultiPuzzle();
     }
 
     /// <summary>
-    /// Sets up the puzzle:
-    /// 1) Generate random substitution cipher.
-    /// 2) Encrypt the secret message.
-    /// 3) Clear the user's guess map.
-    /// 4) Pre-reveal certain letters in the grid.
-    /// 5) Show the scrambled text and partial solution (mostly unknown).
+    /// 1) Generate one random cipher for all phrases.
+    /// 2) Clear/prepare the player's guess map.
+    /// 3) Reveal any pre-filled letters.
+    /// 4) Load the first phrase.
     /// </summary>
-    private void InitializePuzzle()
+    private void InitializeMultiPuzzle()
     {
-        // Generate a random cipher
+        // Generate a single random cipher for all phrases
         encryptMap = GenerateSubstitutionMapping();
-        // Encrypt the secret message
-        scrambledMessage = EncryptWithSubstitution(secretMessage, encryptMap);
 
-        // Initialize user＊s guess map so every scrambled letter is set to '_'
+        // Clear guess map: scrambled letters (A每Z) => '_'
         playerGuessMap.Clear();
         for (char c = 'A'; c <= 'Z'; c++)
         {
             playerGuessMap[c] = '_';
         }
 
-        // Hook up each input field
+        // Set up input fields
         for (int i = 0; i < letterMappingInputs.Length; i++)
         {
             if (letterMappingInputs[i] != null)
@@ -66,33 +67,123 @@ public class SubstitutionPuzzleManager : MonoBehaviour
                 // Clear old text
                 letterMappingInputs[i].text = "";
 
-                // Remove old listeners to avoid duplication
+                // Remove any old listeners
                 letterMappingInputs[i].onValueChanged.RemoveAllListeners();
 
-                // Add new listener
+                // Add a new listener
                 int index = i;
                 letterMappingInputs[i].onValueChanged.AddListener((value) => OnMappingChanged(index, value));
             }
         }
 
-        // Now reveal whichever letters are supposed to be pre-filled
+        // Reveal some letters from the start if desired
         RevealPreFilledLetters();
 
-        // Display the scrambled message
-        if (encryptedText != null)
-            encryptedText.text = scrambledMessage;
+        // Reset puzzle to the first phrase
+        currentPhraseIndex = 0;
+        LoadCurrentPhrase(); // load phrase #1
+    }
 
-        // Show partial decrypted text (most letters unknown)
+    /// <summary>
+    /// Encrypts & displays the current phrase with partial reveals from playerGuessMap.
+    /// </summary>
+    private void LoadCurrentPhrase()
+    {
+        // If we've run out of phrases, puzzle is done
+        if (currentPhraseIndex >= secretPhrases.Length)
+        {
+            if (feedbackText != null)
+                feedbackText.text = "All phrases solved! Puzzle complete.";
+            // You could disable input fields or do something else here.
+            return;
+        }
+
+        // Grab the actual phrase
+        string phraseToEncrypt = secretPhrases[currentPhraseIndex];
+
+        // Encrypt with our cipher
+        currentScrambledPhrase = EncryptWithSubstitution(phraseToEncrypt, encryptMap);
+
+        // Show it
+        if (encryptedText != null)
+            encryptedText.text = currentScrambledPhrase;
+
+        // Update partial decryption text
+        UpdatePartialDecryption();
+        if (feedbackText != null)
+            feedbackText.text = $"Phrase {currentPhraseIndex + 1} of {secretPhrases.Length}";
+    }
+
+    /// <summary>
+    /// If the user hits a "Check Solution" button, we see if
+    /// their partial decryption matches the current phrase exactly.
+    /// If correct, we move to the next phrase; if not, show feedback.
+    /// </summary>
+    public void OnCheckSolution()
+    {
+        // If we're already done, ignore
+        if (currentPhraseIndex >= secretPhrases.Length)
+            return;
+
+        // Build the player's full decryption of the current scrambled phrase
+        string userDecrypted = DecryptWithPlayerGuess(currentScrambledPhrase);
+        // The correct plain text
+        string actualPhrase = secretPhrases[currentPhraseIndex];
+
+        // Compare ignoring case
+        bool matches = userDecrypted.Equals(actualPhrase, System.StringComparison.OrdinalIgnoreCase);
+        if (matches)
+        {
+            // Reveal all letter mappings from this phrase so the user＊s cipher knowledge grows
+            RevealAllLettersFromPhrase(actualPhrase);
+
+            if (feedbackText != null)
+                feedbackText.text = "Correct! Moving to next phrase...";
+
+            // Move to the next phrase
+            currentPhraseIndex++;
+            LoadCurrentPhrase();
+        }
+        else
+        {
+            if (feedbackText != null)
+                feedbackText.text = "Not quite correct. Keep trying!";
+        }
+    }
+
+    /// <summary>
+    /// Called whenever the user types into one of the 26 letter-mapping inputs.
+    /// index = which scrambled letter (0..25 => 'A'+index),
+    /// value = typed text.
+    /// </summary>
+    private void OnMappingChanged(int index, string value)
+    {
+        char scrambledLetter = (char)('A' + index);
+
+        // We treat input as uppercase, only first character
+        value = value.Trim().ToUpper();
+        char guessedChar = '_';
+        if (!string.IsNullOrEmpty(value))
+        {
+            char c = value[0];
+            if (c >= 'A' && c <= 'Z')
+            {
+                guessedChar = c;
+            }
+        }
+
+        // Update guess map
+        playerGuessMap[scrambledLetter] = guessedChar;
+
+        // Refresh partial decryption
         UpdatePartialDecryption();
     }
 
     /// <summary>
-    /// Generate a random substitution mapping (A->X, B->Q, etc.)
-    /// and return it as (plain->scrambled).
+    /// Generates a random cipher: plain (A-Z) => scrambled letter
     /// </summary>
     private Dictionary<char, char> GenerateSubstitutionMapping()
     {
-        // Create a list of letters A每Z
         List<char> letters = new List<char>();
         for (char c = 'A'; c <= 'Z'; c++)
             letters.Add(c);
@@ -107,7 +198,7 @@ public class SubstitutionPuzzleManager : MonoBehaviour
             letters[r] = temp;
         }
 
-        // Build the mapping
+        // Build mapping
         Dictionary<char, char> map = new Dictionary<char, char>();
         char current = 'A';
         foreach (char c in letters)
@@ -119,8 +210,8 @@ public class SubstitutionPuzzleManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Encrypt a string using our substitution mapping. Non-letters remain as is.
-    /// We treat input as uppercase internally.
+    /// Encrypt a string with our cipher. Non-letters stay the same.
+    /// We use uppercase behind the scenes.
     /// </summary>
     private string EncryptWithSubstitution(string input, Dictionary<char, char> map)
     {
@@ -128,176 +219,146 @@ public class SubstitutionPuzzleManager : MonoBehaviour
         char[] arr = input.ToCharArray();
         for (int i = 0; i < arr.Length; i++)
         {
-            char letter = arr[i];
-            if (letter >= 'A' && letter <= 'Z')
+            char ch = arr[i];
+            if (ch >= 'A' && ch <= 'Z')
             {
-                arr[i] = map[letter];
+                arr[i] = map[ch];
             }
         }
         return new string(arr);
     }
 
     /// <summary>
-    /// Called whenever one of the 26 InputFields is changed.
-    /// 'index' is 0..25 for scrambled letter A..Z.
-    /// 'value' is the text typed by the user.
+    /// Decrypt the given scrambled string using the player's guess map.
+    /// If a letter in the guess map is still '_', we show it as '_'.
     /// </summary>
-    private void OnMappingChanged(int index, string value)
+    private string DecryptWithPlayerGuess(string scrambled)
     {
-        // scrambled letter is 'A' + index
-        char scrambledLetter = (char)('A' + index);
-
-        // We'll allow any single letter A每Z (case-insensitive).
-        value = value.Trim().ToUpper();
-        char guessedChar = '_';
-
-        if (!string.IsNullOrEmpty(value))
+        char[] arr = scrambled.ToCharArray();
+        for (int i = 0; i < arr.Length; i++)
         {
-            char c = value[0];
-            if (c >= 'A' && c <= 'Z')
+            char sc = arr[i]; // scrambled char
+            if (sc >= 'A' && sc <= 'Z')
             {
-                guessedChar = c;
+                char guess = playerGuessMap[sc];
+                if (guess == '_')
+                    arr[i] = '_';
+                else
+                    arr[i] = guess;
             }
         }
-
-        playerGuessMap[scrambledLetter] = guessedChar;
-        UpdatePartialDecryption();
+        return new string(arr);
     }
 
     /// <summary>
-    /// Builds a partially decrypted string using the player's guesses.
-    /// If playerGuessMap[eChar] = X, we replace eChar with X in the scrambled text.
-    /// If it's '_', we leave it as '_' (or we could show the scrambled letter).
+    /// Called after any input change to refresh the partial decryption
+    /// of the current scrambled phrase. 
     /// </summary>
     private void UpdatePartialDecryption()
     {
-        char[] buffer = scrambledMessage.ToCharArray();
-        for (int i = 0; i < buffer.Length; i++)
+        if (currentPhraseIndex < secretPhrases.Length)
         {
-            char eChar = buffer[i];
-            if (eChar >= 'A' && eChar <= 'Z')
+            // Rebuild partial text for the current phrase
+            string partial = DecryptWithPlayerGuess(currentScrambledPhrase);
+            if (partialDecryptedText != null)
             {
-                char guess = playerGuessMap[eChar];
-                if (guess == '_')
+                partialDecryptedText.text = partial;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Once a phrase is correctly guessed, we reveal the letter mappings for that entire phrase
+    /// so that future puzzles have more letters pre-solved.
+    /// </summary>
+    private void RevealAllLettersFromPhrase(string plainPhrase)
+    {
+        // We look at how plainPhrase was scrambled by the cipher
+        string scrambled = EncryptWithSubstitution(plainPhrase, encryptMap);
+
+        for (int i = 0; i < plainPhrase.Length; i++)
+        {
+            char p = char.ToUpper(plainPhrase[i]);
+            char s = scrambled[i];
+            if (p >= 'A' && p <= 'Z')
+            {
+                // If we haven't guessed that scrambled letter yet, now we know
+                if (playerGuessMap[s] == '_')
                 {
-                    // If unknown, we can show '_' or the scrambled letter.
-                    // We'll show '_' so the user sees unsolved letters.
-                    buffer[i] = '_';
-                }
-                else
-                {
-                    buffer[i] = guess;
+                    playerGuessMap[s] = p;
+
+                    // Also update the relevant InputField in the grid
+                    int index = s - 'A';
+                    if (index >= 0 && index < letterMappingInputs.Length)
+                    {
+                        letterMappingInputs[index].text = p.ToString();
+                    }
                 }
             }
         }
 
-        string partial = new string(buffer);
-        if (partialDecryptedText != null)
-        {
-            partialDecryptedText.text = partial;
-        }
+        // Refresh partial text
+        UpdatePartialDecryption();
     }
 
+    // ---------------------------------------------
+    //  Pre-Filled Letters from the start
+    // ---------------------------------------------
     /// <summary>
-    /// If you have a button for the user to guess the entire phrase (like ※HELLO UNITY§),
-    /// you can call this method and compare the partial guess to the real solution.
-    /// This is optional 〞 you might just let them solve the mapping visually.
-    /// </summary>
-    public void OnCheckSolution()
-    {
-        // Build the player's full decryption of the scrambled message
-        string userDecrypted = DecryptWithPlayerGuess(scrambledMessage);
-        // Compare ignoring case
-        if (userDecrypted.Equals(secretMessage, System.StringComparison.OrdinalIgnoreCase))
-        {
-            if (feedbackText) feedbackText.text = "Puzzle Solved!";
-        }
-        else
-        {
-            if (feedbackText) feedbackText.text = "Not quite correct. Keep trying!";
-        }
-    }
-
-    /// <summary>
-    /// Decrypt the scrambled message using whatever the player has put in the grid.
-    /// Any unknown letters in playerGuessMap remain '_' in the final string.
-    /// </summary>
-    private string DecryptWithPlayerGuess(string encrypted)
-    {
-        char[] buffer = encrypted.ToCharArray();
-        for (int i = 0; i < buffer.Length; i++)
-        {
-            char eChar = buffer[i];
-            if (eChar >= 'A' && eChar <= 'Z')
-            {
-                char guess = playerGuessMap[eChar];
-                if (guess == '_')
-                {
-                    buffer[i] = '_';
-                }
-                else
-                {
-                    buffer[i] = guess;
-                }
-            }
-        }
-        return new string(buffer);
-    }
-
-    /// <summary>
-    /// If you want to see if the entire cipher is known (i.e., for all scrambled letters A每Z,
-    /// the player has typed in a valid guess), you can check that here.
-    /// </summary>
-    public void OnCheckCipherComplete()
-    {
-        if (IsCipherFullyKnown())
-        {
-            if (feedbackText) feedbackText.text = "All letters discovered! Cipher complete.";
-        }
-        else
-        {
-            if (feedbackText) feedbackText.text = "Some letters remain unknown.";
-        }
-    }
-
-    private bool IsCipherFullyKnown()
-    {
-        // If for every scrambled letter A每Z, playerGuessMap[letter] != '_',
-        // we consider it fully known
-        for (char c = 'A'; c <= 'Z'; c++)
-        {
-            if (playerGuessMap[c] == '_')
-                return false;
-        }
-        return true;
-    }
-
-    /// <summary>
-    /// Look up how each letter in preRevealedPlainLetters was scrambled,
-    /// then fill in the grid with that correct mapping.
+    /// Look up how each letter in preRevealedPlainLetters is scrambled,
+    /// and fill in the correct mapping in playerGuessMap and the grid.
     /// </summary>
     private void RevealPreFilledLetters()
     {
         foreach (char letter in preRevealedPlainLetters)
         {
             char upper = char.ToUpper(letter);
-            // Only proceed if it's A每Z and in our map
-            if (upper >= 'A' && upper <= 'Z' && encryptMap.ContainsKey(upper))
+            if (upper >= 'A' && upper <= 'Z')
             {
-                // The scrambled letter for 'upper'
-                char scrambledLetter = encryptMap[upper];  // e.g. if upper='H' => scrambledLetter='X'
-
-                // Mark that in playerGuessMap so partial text will show it
-                playerGuessMap[scrambledLetter] = upper;
-
-                // Also fill in the corresponding InputField 
-                // index for scrambledLetter is (scrambledLetter - 'A')
-                int index = scrambledLetter - 'A';
-                if (index >= 0 && index < letterMappingInputs.Length)
+                if (encryptMap.ContainsKey(upper))
                 {
-                    letterMappingInputs[index].text = upper.ToString();
+                    // e.g. if encryptMap[upper] = scrambledLetter
+                    char scrambledLetter = encryptMap[upper];
+
+                    // Fill it in
+                    playerGuessMap[scrambledLetter] = upper;
+
+                    // Update the grid UI
+                    int index = scrambledLetter - 'A';
+                    if (index >= 0 && index < letterMappingInputs.Length)
+                    {
+                        letterMappingInputs[index].text = upper.ToString();
+                    }
                 }
             }
         }
+    }
+
+    // ---------------------------------------------
+    //  Optional: Check if entire cipher is solved
+    // ---------------------------------------------
+    public void OnCheckCipherComplete()
+    {
+        if (IsCipherFullyKnown())
+        {
+            if (feedbackText != null)
+                feedbackText.text = "All letters discovered! Cipher complete.";
+        }
+        else
+        {
+            if (feedbackText != null)
+                feedbackText.text = "Some letters remain unknown.";
+        }
+    }
+
+    private bool IsCipherFullyKnown()
+    {
+        // If for every scrambled letter A-Z, the user guess != '_'
+        for (char c = 'A'; c <= 'Z'; c++)
+        {
+            if (playerGuessMap[c] == '_')
+                return false;
+        }
+        return true;
     }
 }
