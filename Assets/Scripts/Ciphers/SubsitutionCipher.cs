@@ -33,6 +33,7 @@ public class SubstitutionPuzzleManager : MonoBehaviour
     void Start()
     {
         InitializePuzzle();
+        feedbackText.text = "";
     }
 
     /// <summary>
