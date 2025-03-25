@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 
@@ -24,9 +25,12 @@ public class SubstitutionPuzzleManager : MonoBehaviour
     // 26 input fields for letters A¨CZ. Index 0 = scrambled 'A', 1 = scrambled 'B', ...
     [SerializeField] private TMP_InputField[] letterMappingInputs = new TMP_InputField[26];
 
-    // A random cipher mapping plain->scrambled. We'll keep it for all phrases.
+    // A random cipher mapping plain->scrambled
     private Dictionary<char, char> encryptMap = new Dictionary<char, char>();
-    // The player's guess map for scrambled->plain. 
+    // The inverse mapping (scrambled->plain), so we can easily check if a guess is correct
+    private Dictionary<char, char> decryptMap = new Dictionary<char, char>();
+
+    // The player's guess map for scrambled->plain.
     // Key = scrambled letter, Value = guessed plain letter (or '_' if unknown).
     private Dictionary<char, char> playerGuessMap = new Dictionary<char, char>();
 
@@ -41,16 +45,18 @@ public class SubstitutionPuzzleManager : MonoBehaviour
         InitializeMultiPuzzle();
     }
 
-    /// <summary>
-    /// 1) Generate one random cipher for all phrases.
-    /// 2) Clear/prepare the player's guess map.
-    /// 3) Reveal any pre-filled letters.
-    /// 4) Load the first phrase.
-    /// </summary>
     private void InitializeMultiPuzzle()
     {
-        // Generate a single random cipher for all phrases
+        // Generate a single random cipher (plain->scrambled)
         encryptMap = GenerateSubstitutionMapping();
+
+        // Build the inverse mapping (scrambled->plain) for checking correctness
+        decryptMap.Clear();
+        foreach (var kvp in encryptMap)
+        {
+            // kvp.Key = plain letter, kvp.Value = scrambled letter
+            decryptMap[kvp.Value] = kvp.Key;
+        }
 
         // Clear guess map: scrambled letters (A¨CZ) => '_'
         playerGuessMap.Clear();
@@ -66,6 +72,13 @@ public class SubstitutionPuzzleManager : MonoBehaviour
             {
                 // Clear old text
                 letterMappingInputs[i].text = "";
+
+                // Reset color to default (white, gray, etc.)
+                // Adjust to your own desired default color
+                if (letterMappingInputs[i].GetComponent<Image>() != null)
+                {
+                    letterMappingInputs[i].GetComponent<Image>().color = Color.white;
+                }
 
                 // Remove any old listeners
                 letterMappingInputs[i].onValueChanged.RemoveAllListeners();
@@ -94,7 +107,6 @@ public class SubstitutionPuzzleManager : MonoBehaviour
         {
             if (feedbackText != null)
                 feedbackText.text = "All phrases solved! Puzzle complete.";
-            // You could disable input fields or do something else here.
             return;
         }
 
@@ -110,6 +122,7 @@ public class SubstitutionPuzzleManager : MonoBehaviour
 
         // Update partial decryption text
         UpdatePartialDecryption();
+
         if (feedbackText != null)
             feedbackText.text = $"Phrase {currentPhraseIndex + 1} of {secretPhrases.Length}";
     }
@@ -121,9 +134,7 @@ public class SubstitutionPuzzleManager : MonoBehaviour
     /// </summary>
     public void OnCheckSolution()
     {
-        // If we're already done, ignore
-        if (currentPhraseIndex >= secretPhrases.Length)
-            return;
+        if (currentPhraseIndex >= secretPhrases.Length) return;
 
         // Build the player's full decryption of the current scrambled phrase
         string userDecrypted = DecryptWithPlayerGuess(currentScrambledPhrase);
@@ -151,11 +162,7 @@ public class SubstitutionPuzzleManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Called whenever the user types into one of the 26 letter-mapping inputs.
-    /// index = which scrambled letter (0..25 => 'A'+index),
-    /// value = typed text.
-    /// </summary>
+
     private void OnMappingChanged(int index, string value)
     {
         char scrambledLetter = (char)('A' + index);
@@ -174,6 +181,31 @@ public class SubstitutionPuzzleManager : MonoBehaviour
 
         // Update guess map
         playerGuessMap[scrambledLetter] = guessedChar;
+
+        // Check correctness: If guessedChar == decryptMap[scrambledLetter], color green
+        // If guessedChar == '_' or incorrect, color white (or your default).
+        if (letterMappingInputs[index].GetComponent<Image>() != null)
+        {
+            if (guessedChar != '_' && decryptMap.ContainsKey(scrambledLetter))
+            {
+                char actualPlain = decryptMap[scrambledLetter];
+                if (guessedChar == actualPlain)
+                {
+                    // Correct guess for that scrambled letter
+                    letterMappingInputs[index].GetComponent<Image>().color = Color.green;
+                }
+                else
+                {
+                    // Wrong guess
+                    letterMappingInputs[index].GetComponent<Image>().color = Color.white;
+                }
+            }
+            else
+            {
+                // Blank or unknown
+                letterMappingInputs[index].GetComponent<Image>().color = Color.white;
+            }
+        }
 
         // Refresh partial decryption
         UpdatePartialDecryption();
@@ -287,11 +319,16 @@ public class SubstitutionPuzzleManager : MonoBehaviour
                 {
                     playerGuessMap[s] = p;
 
-                    // Also update the relevant InputField in the grid
+                    // Update the relevant InputField in the grid
                     int index = s - 'A';
                     if (index >= 0 && index < letterMappingInputs.Length)
                     {
                         letterMappingInputs[index].text = p.ToString();
+                        // Also color it green since it's correct
+                        if (letterMappingInputs[index].GetComponent<Image>() != null)
+                        {
+                            letterMappingInputs[index].GetComponent<Image>().color = Color.green;
+                        }
                     }
                 }
             }
@@ -301,13 +338,7 @@ public class SubstitutionPuzzleManager : MonoBehaviour
         UpdatePartialDecryption();
     }
 
-    // ---------------------------------------------
-    //  Pre-Filled Letters from the start
-    // ---------------------------------------------
-    /// <summary>
-    /// Look up how each letter in preRevealedPlainLetters is scrambled,
-    /// and fill in the correct mapping in playerGuessMap and the grid.
-    /// </summary>
+
     private void RevealPreFilledLetters()
     {
         foreach (char letter in preRevealedPlainLetters)
@@ -328,15 +359,18 @@ public class SubstitutionPuzzleManager : MonoBehaviour
                     if (index >= 0 && index < letterMappingInputs.Length)
                     {
                         letterMappingInputs[index].text = upper.ToString();
+
+                        // Color the tile green, since it's correct
+                        if (letterMappingInputs[index].GetComponent<Image>() != null)
+                        {
+                            letterMappingInputs[index].GetComponent<Image>().color = Color.green;
+                        }
                     }
                 }
             }
         }
     }
 
-    // ---------------------------------------------
-    //  Optional: Check if entire cipher is solved
-    // ---------------------------------------------
     public void OnCheckCipherComplete()
     {
         if (IsCipherFullyKnown())
@@ -353,7 +387,6 @@ public class SubstitutionPuzzleManager : MonoBehaviour
 
     private bool IsCipherFullyKnown()
     {
-        // If for every scrambled letter A-Z, the user guess != '_'
         for (char c = 'A'; c <= 'Z'; c++)
         {
             if (playerGuessMap[c] == '_')
