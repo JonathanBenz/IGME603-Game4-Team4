@@ -6,7 +6,8 @@ public class Shop : MonoBehaviour
 {
     public int premiumMoney = 0;
     public int money = 1000;
-    public int scouts = 5;
+    public int availableScouts = 5;
+    public int occupiedScouts;
     public int flashlights;
     public int shovels;
     public int foodWater;
@@ -14,6 +15,7 @@ public class Shop : MonoBehaviour
     public TMP_Text moneyText;
     public TMP_Text PremiumMoneyText;
     public TMP_Text availableScoutsText;
+    public TMP_Text occupiedScoutsText;
     public TMP_Text flashlightsText;
     public TMP_Text shovelsText;
     public TMP_Text foodWaterText;
@@ -44,7 +46,7 @@ public class Shop : MonoBehaviour
                 switch (item.Key)
                 {
                     case "Scout":
-                        scouts++;
+                        availableScouts++;
                         break;
                     case "Flashlight":
                         flashlights++;
@@ -82,7 +84,8 @@ public class Shop : MonoBehaviour
     {
         moneyText.text = "Money: " + money;
         PremiumMoneyText.text = "Premium: " + premiumMoney;
-        availableScoutsText.text = "In: " + scouts;
+        availableScoutsText.text = "In: " + availableScouts;
+        occupiedScoutsText.text = "Out: " + occupiedScouts;
         flashlightsText.text = "Flashlights: " + flashlights;
         shovelsText.text = "Shovels: " + shovels;
         foodWaterText.text = "Food/Water: " + foodWater;

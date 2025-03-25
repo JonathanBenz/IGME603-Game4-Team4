@@ -14,6 +14,8 @@ public class Pin : MonoBehaviour
     int difficultyLevel;
     static bool popUpActive; // static so that it applies across all pins
     bool isOccupied;
+    int numScoutsSentToPin;
+    Shop shop;
 
     public int DifficultyLevel { get { return difficultyLevel; } }
     public bool PopUpActive { set { popUpActive = value; } }
@@ -22,6 +24,7 @@ public class Pin : MonoBehaviour
     {
         pinLight = transform.GetChild(0).gameObject;
         popUp = FindObjectOfType<PopUp>();
+        shop = FindObjectOfType<Shop>();
     }
     private void Start()
     {
@@ -65,7 +68,7 @@ public class Pin : MonoBehaviour
     /// <summary>
     /// If the player sends scouts to this pin, set as occupied and draw a line to the pin.
     /// </summary>
-    public void SetAsOccupied()
+    public void SetAsOccupied(int numScoutsSent)
     {
         Transform baseTransform = FindObjectOfType<HomeBase>().transform;
         Vector3 basePosition = baseTransform.GetComponent<RectTransform>().position;
@@ -76,6 +79,11 @@ public class Pin : MonoBehaviour
         //Vector3 lengthBetween = this.transform.TransformPoint(Vector3.zero) - basePosition;
         line.GetComponent<MapLine>().SetLine(lengthBetween);
         isOccupied = true;
+        numScoutsSentToPin = numScoutsSent;
+        shop.availableScouts -= numScoutsSentToPin;
+        shop.availableScoutsText.text = "In: " + shop.availableScouts.ToString();
+        shop.occupiedScouts += numScoutsSentToPin;
+        shop.occupiedScoutsText.text = "Out: " + shop.occupiedScouts.ToString();
     }
 
     private int CalculateRandomDifficulty()
