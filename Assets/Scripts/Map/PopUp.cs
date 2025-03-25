@@ -79,6 +79,7 @@ public class PopUp : MonoBehaviour
     }
     public void SendTeamButtonPressed()
     {
+        if (scouts == 0) { ExitPopUp(); return; }
         shop.foodWater -= food;
         shop.foodWaterText.text = "Food/Water: " + shop.foodWater.ToString();
         shop.shovels -= shovels;
