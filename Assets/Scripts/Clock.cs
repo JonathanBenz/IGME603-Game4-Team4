@@ -10,15 +10,18 @@ using TMPro;
 public class Clock : MonoBehaviour
 {
     [SerializeField] float clockSpeed = 0.1f;
+    [SerializeField] int amountToDeduct = 10;
     Image clockImg;
     GameObject dayPassedTextGO;
     TMP_Text dayPassedText;
+    Shop shop;
 
     private void Awake()
     {
         clockImg = GetComponent<Image>();
         dayPassedTextGO = transform.GetChild(0).gameObject;
         dayPassedText = dayPassedTextGO.GetComponent<TMP_Text>();
+        shop = FindObjectOfType<Shop>();
     }
     // Start is called before the first frame update
     void Start()
@@ -51,6 +54,7 @@ public class Clock : MonoBehaviour
     {
         //TODO: Deduct resources, update map progress
         StartCoroutine(DayPassedTextAnim());
+        shop.DeductMoney(amountToDeduct);
     }
 
     /// <summary>

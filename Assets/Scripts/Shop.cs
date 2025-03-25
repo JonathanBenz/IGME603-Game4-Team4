@@ -82,12 +82,19 @@ public class Shop : MonoBehaviour
 
     void UpdateText()
     {
-        moneyText.text = "Money: " + money;
+        moneyText.text = "Money: $" + money;
         PremiumMoneyText.text = "Premium: " + premiumMoney;
         availableScoutsText.text = "In: " + availableScouts;
         occupiedScoutsText.text = "Out: " + occupiedScouts;
         flashlightsText.text = "Flashlights: " + flashlights;
         shovelsText.text = "Shovels: " + shovels;
         foodWaterText.text = "Food/Water: " + foodWater;
+    }
+
+    public void DeductMoney(int amountToDeduct)
+    {
+        money -= amountToDeduct;
+        if (money <= 0) money = 0;
+        moneyText.text = "Money: $" + money;
     }
 }
