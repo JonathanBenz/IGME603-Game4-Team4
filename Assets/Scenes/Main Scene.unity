@@ -3478,7 +3478,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -153.99994, y: 495.29}
+  m_AnchoredPosition: {x: -153.99994, y: 495.29004}
   m_SizeDelta: {x: -1561.77, y: -986.57}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &395370308
@@ -3897,7 +3897,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -726.99994, y: -311}
+  m_AnchoredPosition: {x: -727, y: -311}
   m_SizeDelta: {x: -1530.092, y: -691.1382}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &451476797
@@ -7522,7 +7522,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 518, y: -223}
+  m_AnchoredPosition: {x: 518, y: -222.99998}
   m_SizeDelta: {x: 204.612, y: 56.179}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &820869771
@@ -9028,7 +9028,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -494.99994, y: 493.29}
+  m_AnchoredPosition: {x: -494.99994, y: 493.29004}
   m_SizeDelta: {x: -1686.608, y: -986.57}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &955744931
@@ -16001,14 +16001,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   premiumMoney: 0
-  money: 100
-  scouts: 5
+  money: 1000
+  availableScouts: 5
+  occupiedScouts: 0
   flashlights: 0
   shovels: 0
   foodWater: 0
   moneyText: {fileID: 2764290417040813626}
   PremiumMoneyText: {fileID: 1444365393}
   availableScoutsText: {fileID: 68455847}
+  occupiedScoutsText: {fileID: 1100794377}
   flashlightsText: {fileID: 1170167786}
   shovelsText: {fileID: 93421521}
   foodWaterText: {fileID: 601447800}
@@ -17780,7 +17782,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 21, y: -153}
+  m_AnchoredPosition: {x: 21, y: -153.00002}
   m_SizeDelta: {x: 783.45, y: 148.657}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &1951647149
@@ -19927,7 +19929,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Money :  000'
+  m_text: 'Money :  0000'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

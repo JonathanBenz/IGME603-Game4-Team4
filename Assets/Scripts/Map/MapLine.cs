@@ -16,6 +16,7 @@ public class MapLine : MonoBehaviour
 
     private void Awake()
     {
+        this.transform.SetSiblingIndex(3);
         rectTransform = GetComponent<RectTransform>();
         canvasScaler = transform.parent.GetComponent<CanvasScaler>();
     }
