@@ -370,6 +370,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1190107468734027781, guid: eadf4299959eaad44b2f346f4e71863c, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 1126.5042
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190107468734027781, guid: eadf4299959eaad44b2f346f4e71863c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 4.5694
+      objectReference: {fileID: 0}
     - target: {fileID: 1926025030875435748, guid: eadf4299959eaad44b2f346f4e71863c, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -400,6 +408,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5975540460377699725, guid: eadf4299959eaad44b2f346f4e71863c, type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6885800130078147384, guid: eadf4299959eaad44b2f346f4e71863c, type: 3}
+      propertyPath: m_text
+      value: Ciphers from the Dust
+      objectReference: {fileID: 0}
+    - target: {fileID: 6885800130078147384, guid: eadf4299959eaad44b2f346f4e71863c, type: 3}
+      propertyPath: m_fontSize
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 6885800130078147384, guid: eadf4299959eaad44b2f346f4e71863c, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 6885800130078147384, guid: eadf4299959eaad44b2f346f4e71863c, type: 3}
+      propertyPath: m_enableAutoSizing
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
