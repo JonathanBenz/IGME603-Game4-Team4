@@ -62,7 +62,7 @@ public class SubstitutionPuzzleManager : MonoBehaviour
         playerGuessMap.Clear();
         for (char c = 'A'; c <= 'Z'; c++)
         {
-            playerGuessMap[c] = '_';
+            playerGuessMap[c] = '-';
         }
 
         // Set up input fields
