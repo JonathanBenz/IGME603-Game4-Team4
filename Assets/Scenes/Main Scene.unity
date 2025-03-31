@@ -500,18 +500,94 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 850759823607105917, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: m_Name
+      value: _Pin (Melbourne)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1156620709070654417, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: locationInfo
+      value: 
+      objectReference: {fileID: 11400000, guid: aea39e9de25f13448be14d07a2a1074f, type: 2}
+    - target: {fileID: 2225411102500634757, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: m_Name
+      value: _Pin (Queensland)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2528292981064343423, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 409
+      objectReference: {fileID: 0}
+    - target: {fileID: 2528292981064343423, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -206
+      objectReference: {fileID: 0}
+    - target: {fileID: 3638470395369777486, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: m_Name
+      value: _Pin (Western)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4178358712792961864, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4178358712792961864, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 142
+      objectReference: {fileID: 0}
+    - target: {fileID: 4316958512878935935, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: m_Name
+      value: _Pin (Adelaide)
+      objectReference: {fileID: 0}
     - target: {fileID: 4447379946661581147, guid: 227a151939a568542985d00d1b0271f4, type: 3}
       propertyPath: m_Name
       value: MapCanvas
       objectReference: {fileID: 0}
     - target: {fileID: 4447379946661581147, guid: 227a151939a568542985d00d1b0271f4, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4912245042045912839, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4983476434188875696, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: locationInfo
+      value: 
+      objectReference: {fileID: 11400000, guid: cbcaa019e973ccd48b1c7319edd5a82b, type: 2}
+    - target: {fileID: 5460551440178953444, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: m_Name
+      value: _Pin (New South Wales)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996931501945945316, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 102
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996931501945945316, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -222.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6534716482446904021, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -633
+      objectReference: {fileID: 0}
+    - target: {fileID: 6534716482446904021, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -111
+      objectReference: {fileID: 0}
+    - target: {fileID: 7142438554762717926, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 313
+      objectReference: {fileID: 0}
+    - target: {fileID: 7142438554762717926, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -320
       objectReference: {fileID: 0}
     - target: {fileID: 7265306255333107459, guid: 227a151939a568542985d00d1b0271f4, type: 3}
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 963194227}
+    - target: {fileID: 7616875042325077627, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: locationInfo
+      value: 
+      objectReference: {fileID: 11400000, guid: 93ac80bf33b3b5e429e83315ee60222c, type: 2}
     - target: {fileID: 7691827136683288894, guid: 227a151939a568542985d00d1b0271f4, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -592,8 +668,32 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7916908559892182308, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: c315e3cef65ed2d4cb45f8e8fe51243a, type: 3}
+    - target: {fileID: 8000971155553950642, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8252302993137531311, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8517349317309883166, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 514
+      objectReference: {fileID: 0}
+    - target: {fileID: 8517349317309883166, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -27
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 8252302993137531311, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+    - {fileID: 8000971155553950642, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+    - {fileID: 850759823607105917, guid: 227a151939a568542985d00d1b0271f4, type: 3}
+    - {fileID: 4316958512878935935, guid: 227a151939a568542985d00d1b0271f4, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 227a151939a568542985d00d1b0271f4, type: 3}
@@ -3474,7 +3574,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -153.99994, y: 495.29004}
+  m_AnchoredPosition: {x: -153.99997, y: 495.29004}
   m_SizeDelta: {x: -1561.77, y: -986.57}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &395370308
@@ -3893,7 +3993,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -726.99994, y: -311}
+  m_AnchoredPosition: {x: -726.9999, y: -311}
   m_SizeDelta: {x: -1530.092, y: -691.1382}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &451476797
@@ -9024,7 +9124,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -494.99994, y: 493.29004}
+  m_AnchoredPosition: {x: -494.99985, y: 493.29004}
   m_SizeDelta: {x: -1686.608, y: -986.57}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &955744931
@@ -12558,7 +12658,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -43.918457, y: -308.99}
+  m_AnchoredPosition: {x: -43.91809, y: -308.98993}
   m_SizeDelta: {x: -998.7546, y: -687.13}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1410036289
@@ -13965,7 +14065,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -8.9999695, y: -53.99991}
+  m_AnchoredPosition: {x: -9, y: -53.999878}
   m_SizeDelta: {x: 758.17, y: 47.645}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1514558531
@@ -17141,7 +17241,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -253.84003, y: 116.02612}
+  m_AnchoredPosition: {x: -253.83994, y: 116.02612}
   m_SizeDelta: {x: -583.77, y: -667.168}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1860401897
