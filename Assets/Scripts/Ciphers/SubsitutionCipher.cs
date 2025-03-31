@@ -187,30 +187,6 @@ public class SubstitutionPuzzleManager : MonoBehaviour
         // Update guess map
         playerGuessMap[scrambledLetter] = guessedChar;
 
-        // Check correctness: If guessedChar == decryptMap[scrambledLetter], color green
-        // If guessedChar == '_' or incorrect, color white (or your default).
-        if (letterMappingInputs[index].GetComponent<Image>() != null)
-        {
-            if (guessedChar != '_' && decryptMap.ContainsKey(scrambledLetter))
-            {
-                char actualPlain = decryptMap[scrambledLetter];
-                if (guessedChar == actualPlain)
-                {
-                    // Correct guess for that scrambled letter
-                    letterMappingInputs[index].GetComponent<Image>().color = Color.green;
-                }
-                else
-                {
-                    // Wrong guess
-                    letterMappingInputs[index].GetComponent<Image>().color = Color.white;
-                }
-            }
-            else
-            {
-                // Blank or unknown
-                letterMappingInputs[index].GetComponent<Image>().color = Color.white;
-            }
-        }
 
         // Refresh partial decryption
         UpdatePartialDecryption();
@@ -388,13 +364,14 @@ public class SubstitutionPuzzleManager : MonoBehaviour
             if (feedbackText != null)
                 feedbackText.text = "Some letters remain unknown.";
         }
+        ApplyLetterColors();
     }
 
     private bool IsCipherFullyKnown()
     {
         for (char c = 'A'; c <= 'Z'; c++)
         {
-            if (playerGuessMap[c] == '_')
+            if (playerGuessMap[c] == '-')
                 return false;
         }
         return true;
@@ -504,5 +481,35 @@ public class SubstitutionPuzzleManager : MonoBehaviour
         }
     }
 
+    private void ApplyLetterColors()
+    {
+        for (int i = 0; i < letterMappingInputs.Length; i++)
+        {
+            // 'A' + i = the scrambled letter we’re dealing with
+            char scrambledLetter = (char)('A' + i);
+            char guessedChar = playerGuessMap[scrambledLetter];
+
+            // If there's a guess and we have the correct mapping in decryptMap
+            if (guessedChar != '_' && decryptMap.ContainsKey(scrambledLetter))
+            {
+                char actualPlain = decryptMap[scrambledLetter];
+                if (guessedChar == actualPlain)
+                {
+                    // Correct
+                    letterMappingInputs[i].GetComponent<Image>().color = Color.green;
+                }
+                else
+                {
+                    // Incorrect
+                    letterMappingInputs[i].GetComponent<Image>().color = Color.white;
+                }
+            }
+            else
+            {
+                // Blank or unknown
+                letterMappingInputs[i].GetComponent<Image>().color = Color.white;
+            }
+        }
+    }
 
 }
