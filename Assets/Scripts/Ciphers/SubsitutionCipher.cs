@@ -401,4 +401,72 @@ public class SubstitutionPuzzleManager : MonoBehaviour
     {
         return "<mspace=30>" + input + "</mspace>";
     }
+    public void OnRequestNewCipher()
+    {
+        if (!IsCipherFullyKnown())
+        {
+            if (feedbackText != null)
+                feedbackText.text = "You must complete the cipher before requesting a new one!";
+            return;
+        }
+        // 1) Generate new cipher
+        encryptMap = GenerateSubstitutionMapping();
+
+        decryptMap.Clear();
+        foreach (var kvp in encryptMap)
+        {
+            decryptMap[kvp.Value] = kvp.Key;
+        }
+
+        // 2) Reset the player’s guess map
+        playerGuessMap.Clear();
+        for (char c = 'A'; c <= 'Z'; c++)
+        {
+            playerGuessMap[c] = '-';
+        }
+
+        // 3) Clear all input fields & reattach listeners
+        for (int i = 0; i < letterMappingInputs.Length; i++)
+        {
+            if (letterMappingInputs[i] != null)
+            {
+                // Clear text and color
+                letterMappingInputs[i].onValueChanged.RemoveAllListeners();
+                letterMappingInputs[i].text = "";
+                if (letterMappingInputs[i].GetComponent<Image>() != null)
+                {
+                    letterMappingInputs[i].GetComponent<Image>().color = Color.white;
+                }
+
+                // Add back the listener so we can capture new guesses
+                int index = i;
+                letterMappingInputs[i].onValueChanged.AddListener(
+                    (value) => OnMappingChanged(index, value));
+            }
+        }
+
+        // 4) Re-encrypt *the current puzzle* with the new cipher
+        if (currentPhraseIndex < secretPhrases.Length)
+        {
+            string phraseToEncrypt = secretPhrases[currentPhraseIndex];
+            currentScrambledPhrase = EncryptWithSubstitution(phraseToEncrypt, encryptMap);
+
+            // Update the Encrypted Text label
+            if (encryptedText != null)
+                encryptedText.text = currentScrambledPhrase;
+
+            // Refresh partial text (should show all underscores except pre-revealed letters)
+            UpdatePartialDecryption();
+
+            if (feedbackText != null)
+                feedbackText.text = "New cipher applied! Solve this puzzle again with the new cipher.";
+        }
+        else
+        {
+            // If the player was already past the last phrase, do nothing or show a message
+            if (feedbackText != null)
+                feedbackText.text = "No remaining puzzles to re-encrypt.";
+        }
+    }
+
 }
