@@ -5,20 +5,20 @@ using System.Collections.Generic;
 public class Shop : MonoBehaviour
 {
     public int premiumMoney = 0;
-    public int money = 1000;
+    public int money = 200;
     public int availableScouts = 5;
     public int occupiedScouts;
-    public int flashlights;
-    public int shovels;
-    public int foodWater;
+    //public int flashlights;
+    public int bloominOnions;
+    //public int foodWater;
 
     public TMP_Text moneyText;
     public TMP_Text PremiumMoneyText;
     public TMP_Text availableScoutsText;
     public TMP_Text occupiedScoutsText;
-    public TMP_Text flashlightsText;
-    public TMP_Text shovelsText;
-    public TMP_Text foodWaterText;
+    //public TMP_Text flashlightsText;
+    public TMP_Text bloominOnionText;
+    //public TMP_Text foodWaterText;
     
     public Dictionary<string, int> shopItems = new Dictionary<string, int>();
 
@@ -26,10 +26,10 @@ public class Shop : MonoBehaviour
     {
         UpdateText();
 
-        shopItems.Add("Scout", 10);
-        shopItems.Add("Flashlight", 5);
-        shopItems.Add("Shovel", 5);
-        shopItems.Add("Food/Water", 5);
+        shopItems.Add("Kangaroos", 10);
+        shopItems.Add("Bloomin' Onions", 5);
+        //shopItems.Add("Shovel", 5);
+        //shopItems.Add("Food/Water", 5);
         
     }
 
@@ -48,15 +48,15 @@ public class Shop : MonoBehaviour
                     case "Scout":
                         availableScouts++;
                         break;
-                    case "Flashlight":
+                    /*case "Flashlight":
                         flashlights++;
+                        break;*/
+                    case "Bloomin' Onions":
+                        bloominOnions++;
                         break;
-                    case "Shovel":
-                        shovels++;
-                        break;
-                    case "Food/Water":
+                    /*case "Food/Water":
                         foodWater++;
-                        break;
+                        break;*/
                     /*
                     case "":
                         availableScouts++;
@@ -86,9 +86,9 @@ public class Shop : MonoBehaviour
         PremiumMoneyText.text = "Premium: " + premiumMoney;
         availableScoutsText.text = "In: " + availableScouts;
         occupiedScoutsText.text = "Out: " + occupiedScouts;
-        flashlightsText.text = "Flashlights: " + flashlights;
-        shovelsText.text = "Shovels: " + shovels;
-        foodWaterText.text = "Food/Water: " + foodWater;
+        //flashlightsText.text = "Flashlights: " + flashlights;
+        bloominOnionText.text = "Bloomin' Onions: " + bloominOnions;
+        //foodWaterText.text = "Food/Water: " + foodWater;
     }
 
     public void DeductMoney(int amountToDeduct)
