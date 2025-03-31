@@ -14,14 +14,10 @@ public class PopUp : MonoBehaviour
     [SerializeField] TextMeshProUGUI blurbText;
     [SerializeField] TextMeshProUGUI difficultyText;
     [SerializeField] TextMeshProUGUI numKangaroosText;
-    //[SerializeField] TextMeshProUGUI numFoodText;
     [SerializeField] TextMeshProUGUI numBloominOnionsText;
-    //[SerializeField] TextMeshProUGUI numFlashlightsText;
 
     int kangaroos;
-    //int food;
     int bloominOnions;
-    //int flashlights;
 
     bool cursorOutOfBounds;
     Shop shop;
@@ -52,15 +48,9 @@ public class PopUp : MonoBehaviour
         numKangaroosText.text = "0";
         kangaroos = 0;
         numKangaroosText.color = Color.red;
-        /*numFoodText.text = "0";
-        food = 0;
-        numFoodText.color = Color.red;*/
         numBloominOnionsText.text = "0";
         bloominOnions = 0;
         numBloominOnionsText.color = Color.red;
-        /*numFlashlightsText.text = "0";
-        flashlights = 0;
-        numFlashlightsText.color = Color.red;*/
         lastActivePin = pin;
     }
 
@@ -80,12 +70,7 @@ public class PopUp : MonoBehaviour
     public void SendTeamButtonPressed()
     {
         if (kangaroos == 0) { ExitPopUp(); return; }
-        /*shop.foodWater -= food;
-        shop.foodWaterText.text = "Food/Water: " + shop.foodWater.ToString();*/
         shop.bloominOnions -= bloominOnions;
-        shop.bloominOnionText.text = "Shovels: " + shop.bloominOnions.ToString();
-        /*shop.flashlights -= flashlights;
-        shop.flashlightsText.text = "Flashlights: " + shop.flashlights.ToString();*/
         lastActivePin.SetAsOccupied(kangaroos);
         ExitPopUp();
     }
@@ -95,8 +80,8 @@ public class PopUp : MonoBehaviour
     {
         if (isIncreasing)
         {
-            if (kangaroos >= shop.availableScouts) return;
-            if (shop.availableScouts >= 1) kangaroos++;
+            if (kangaroos >= shop.kangaroos) return;
+            if (shop.kangaroos >= 1) kangaroos++;
             numKangaroosText.color = Color.green;
         }
         else
@@ -110,27 +95,6 @@ public class PopUp : MonoBehaviour
         }
         numKangaroosText.text = kangaroos.ToString();
     }
-
-    /*// Increases or Decreases food number (to be used on Button Press)
-    public void IncreaseOrDecreaseFoodNumber(bool isIncreasing)
-    {
-        if (isIncreasing)
-        {
-            if (food >= shop.foodWater) return;
-            if (shop.foodWater >= 1) food++;
-            numFoodText.color = Color.green;
-        }
-        else
-        {
-            food--;
-            if (food <= 0)
-            {
-                food = 0;
-                numFoodText.color = Color.red;
-            }
-        }
-        numFoodText.text = food.ToString();
-    }*/
 
     // Increases or Decreases shovel number (to be used on Button Press)
     public void IncreaseOrDecreaseShovelNumber(bool isIncreasing)
@@ -152,25 +116,4 @@ public class PopUp : MonoBehaviour
         }
         numBloominOnionsText.text = bloominOnions.ToString();
     }
-
-    /*// Increases or Decreases flashlight number (to be used on Button Press)
-    public void IncreaseOrDecreaseFlashlightNumber(bool isIncreasing)
-    {
-        if (isIncreasing)
-        {
-            if (flashlights >= shop.flashlights) return;
-            if (shop.flashlights >= 1) flashlights++;
-            numFlashlightsText.color = Color.green;
-        }
-        else
-        {
-            flashlights--;
-            if (flashlights <= 0)
-            {
-                flashlights = 0;
-                numFlashlightsText.color = Color.red;
-            }
-        }
-        numFlashlightsText.text = flashlights.ToString();
-    }*/
 }
