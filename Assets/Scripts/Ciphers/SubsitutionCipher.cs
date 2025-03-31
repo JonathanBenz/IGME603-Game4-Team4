@@ -22,7 +22,7 @@ public class SubstitutionPuzzleManager : MonoBehaviour
     [SerializeField] private TMP_Text partialDecryptedText; // Displays partial decryption as the player guesses
     [SerializeField] private TMP_Text feedbackText;         // "Correct!" / "Keep trying!" messages
 
-    // 26 input fields for letters A¨CZ. Index 0 = scrambled 'A', 1 = scrambled 'B', ...
+    // 26 input fields for letters Aï¿½CZ. Index 0 = scrambled 'A', 1 = scrambled 'B', ...
     [SerializeField] private TMP_InputField[] letterMappingInputs = new TMP_InputField[26];
 
     // A random cipher mapping plain->scrambled
@@ -34,7 +34,7 @@ public class SubstitutionPuzzleManager : MonoBehaviour
     // Key = scrambled letter, Value = guessed plain letter (or '_' if unknown).
     private Dictionary<char, char> playerGuessMap = new Dictionary<char, char>();
 
-    // Which phrase we¡¯re currently on
+    // Which phrase weï¿½ï¿½re currently on
     private int currentPhraseIndex = 0;
 
     // The scrambled text of the current phrase
@@ -58,7 +58,7 @@ public class SubstitutionPuzzleManager : MonoBehaviour
             decryptMap[kvp.Value] = kvp.Key;
         }
 
-        // Clear guess map: scrambled letters (A¨CZ) => '_'
+        // Clear guess map: scrambled letters (Aï¿½CZ) => '_'
         playerGuessMap.Clear();
         for (char c = 'A'; c <= 'Z'; c++)
         {
@@ -114,7 +114,7 @@ public class SubstitutionPuzzleManager : MonoBehaviour
         string phraseToEncrypt = secretPhrases[currentPhraseIndex];
 
         // Encrypt with our cipher
-        currentScrambledPhrase = EncryptWithSubstitution(phraseToEncrypt, encryptMap);
+        currentScrambledPhrase = Monospace(EncryptWithSubstitution(phraseToEncrypt, encryptMap));
 
         // Show it
         if (encryptedText != null)
@@ -145,7 +145,7 @@ public class SubstitutionPuzzleManager : MonoBehaviour
         bool matches = userDecrypted.Equals(actualPhrase, System.StringComparison.OrdinalIgnoreCase);
         if (matches)
         {
-            // Reveal all letter mappings from this phrase so the user¡¯s cipher knowledge grows
+            // Reveal all letter mappings from this phrase so the userï¿½ï¿½s cipher knowledge grows
             RevealAllLettersFromPhrase(actualPhrase);
 
             if (feedbackText != null)
@@ -291,7 +291,7 @@ public class SubstitutionPuzzleManager : MonoBehaviour
         if (currentPhraseIndex < secretPhrases.Length)
         {
             // Rebuild partial text for the current phrase
-            string partial = DecryptWithPlayerGuess(currentScrambledPhrase);
+            string partial = Monospace(DecryptWithPlayerGuess(currentScrambledPhrase));
             if (partialDecryptedText != null)
             {
                 partialDecryptedText.text = partial;
@@ -393,5 +393,12 @@ public class SubstitutionPuzzleManager : MonoBehaviour
                 return false;
         }
         return true;
+    }
+
+    /// <summary>
+    /// Wraps the input string in <mspace=30> tags to display it in monospace font.
+    public static string Monospace(string input)
+    {
+        return "<mspace=30>" + input + "</mspace>";
     }
 }
