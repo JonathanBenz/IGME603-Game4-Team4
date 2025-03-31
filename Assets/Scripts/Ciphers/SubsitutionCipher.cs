@@ -5,6 +5,10 @@ using System.Collections.Generic;
 
 public class SubstitutionPuzzleManager : MonoBehaviour
 {
+
+    [SerializeField] public Transform symbolGridParent;
+
+
     [Header("Puzzle Settings")]
     [Tooltip("List of multiple secret phrases to solve in sequence.")]
     [SerializeField]
@@ -43,6 +47,7 @@ public class SubstitutionPuzzleManager : MonoBehaviour
     void Start()
     {
         InitializeMultiPuzzle();
+        ShuffleChildrenUnderGrid();
     }
 
     private void InitializeMultiPuzzle()
@@ -412,11 +417,16 @@ public class SubstitutionPuzzleManager : MonoBehaviour
         // 1) Generate new cipher
         encryptMap = GenerateSubstitutionMapping();
 
+
+
+
+
         decryptMap.Clear();
         foreach (var kvp in encryptMap)
         {
             decryptMap[kvp.Value] = kvp.Key;
         }
+        ShuffleChildrenUnderGrid();
 
         // 2) Reset the player’s guess map
         playerGuessMap.Clear();
@@ -468,5 +478,31 @@ public class SubstitutionPuzzleManager : MonoBehaviour
                 feedbackText.text = "No remaining puzzles to re-encrypt.";
         }
     }
+    private void ShuffleChildrenUnderGrid()
+    {
+        // Get a list of all current children
+        List<Transform> children = new List<Transform>();
+        foreach (Transform child in symbolGridParent)
+        {
+            children.Add(child);
+        }
+
+        // Shuffle this list
+        System.Random rand = new System.Random();
+        for (int i = 0; i < children.Count; i++)
+        {
+            int r = rand.Next(i, children.Count);
+            Transform temp = children[i];
+            children[i] = children[r];
+            children[r] = temp;
+        }
+
+        // Now reassign sibling indices in the new order
+        for (int i = 0; i < children.Count; i++)
+        {
+            children[i].SetSiblingIndex(i);
+        }
+    }
+
 
 }
