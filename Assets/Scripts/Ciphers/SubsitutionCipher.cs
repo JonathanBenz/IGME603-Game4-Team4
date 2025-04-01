@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using System.Linq;
 
 public class SubstitutionPuzzleManager : MonoBehaviour
 {
@@ -175,10 +176,24 @@ public class SubstitutionPuzzleManager : MonoBehaviour
 
     private void OnMappingChanged(int index, string value)
     {
-        char scrambledLetter = (char)('A' + index);
 
-        // We treat input as uppercase, only first character
-        value = value.Trim().ToUpper();
+        value = new string(System.Linq.Enumerable
+            .Where(value, c => char.IsLetter(c))
+            .ToArray());
+
+
+        if (value.Length > 1)
+        {
+            value = value.Substring(0, 1);
+        }
+
+
+        value = value.ToUpper();
+
+
+        letterMappingInputs[index].text = value;
+
+        char scrambledLetter = (char)('A' + index);
         char guessedChar = '_';
         if (!string.IsNullOrEmpty(value))
         {
@@ -189,13 +204,11 @@ public class SubstitutionPuzzleManager : MonoBehaviour
             }
         }
 
-        // Update guess map
         playerGuessMap[scrambledLetter] = guessedChar;
-        UpdateMissingLettersDisplay();
 
-        // Refresh partial decryption
         UpdatePartialDecryption();
     }
+
 
     /// <summary>
     /// Generates a random cipher: plain (A-Z) => scrambled letter
