@@ -565,55 +565,64 @@ public class SubstitutionPuzzleManager : MonoBehaviour
 
 
 
-    /// <summary>
-    /// Reveals the provided letters in the current cipher,
-    /// so the player sees them as already solved.
-    /// </summary>
-    public void RevealMoreLetters(char[] lettersToReveal)
+    public void RevealRandomUnknownLetter()
     {
-        foreach (char letter in lettersToReveal)
+
+        List<char> unrevealedPlainLetters = new List<char>();
+        for (char plain = 'A'; plain <= 'Z'; plain++)
         {
-            char upper = char.ToUpper(letter);
-            if (upper >= 'A' && upper <= 'Z')
+            // If the cipher maps this plain letter to some scrambled letter
+            if (encryptMap.ContainsKey(plain))
             {
-                // Only reveal if we have that letter in our cipher
-                if (encryptMap.ContainsKey(upper))
+                char scrambled = encryptMap[plain];
+
+                // Check if the player's guess for that scrambled letter is still unknown
+                if (playerGuessMap[scrambled] == '_' || playerGuessMap[scrambled] == '-')
                 {
-                    // e.g. if encryptMap[upper] = scrambledLetter
-                    char scrambledLetter = encryptMap[upper];
-
-                    // Fill it in if not already revealed
-                    if (playerGuessMap[scrambledLetter] == '_' ||
-                        playerGuessMap[scrambledLetter] == '-')
-                    {
-                        playerGuessMap[scrambledLetter] = upper;
-
-                        // Update the grid UI
-                        int index = scrambledLetter - 'A';
-                        if (index >= 0 && index < letterMappingInputs.Length)
-                        {
-                            letterMappingInputs[index].text = upper.ToString();
-
-                            // Color the tile green, since it's correct
-                            var img = letterMappingInputs[index].GetComponent<UnityEngine.UI.Image>();
-                            if (img != null)
-                            {
-                                img.color = Color.green;
-                            }
-                        }
-                    }
+                    unrevealedPlainLetters.Add(plain);
                 }
             }
         }
 
-        // Refresh partial text to reflect newly revealed letters
+        // 2) If everything is already revealed, there's nothing to reveal!
+        if (unrevealedPlainLetters.Count == 0)
+        {
+            if (feedbackText != null)
+                feedbackText.text = "No unknown letters remain to reveal!";
+            return;
+        }
+
+        // 3) Pick ONE random letter from the list
+        System.Random rand = new System.Random();
+        int randomIndex = rand.Next(unrevealedPlainLetters.Count);
+        char letterToReveal = unrevealedPlainLetters[randomIndex]; 
+
+        // 4) Reveal that letter: find its scrambled version and fill in the guess map
+        char scrambledLetter = encryptMap[letterToReveal];
+
+        // Update the guess map with the real plain letter
+        playerGuessMap[scrambledLetter] = letterToReveal;
+
+        // Update the corresponding InputField in the UI
+        int fieldIndex = scrambledLetter - 'A';
+        if (fieldIndex >= 0 && fieldIndex < letterMappingInputs.Length)
+        {
+            letterMappingInputs[fieldIndex].text = letterToReveal.ToString();
+
+            // Color it green, since it's a "correct reveal"
+            var img = letterMappingInputs[fieldIndex].GetComponent<UnityEngine.UI.Image>();
+            if (img != null)
+            {
+                img.color = Color.green;
+            }
+        }
+
+        // 5) Refresh partial text to reflect the newly revealed letter
         UpdatePartialDecryption();
 
-        // Optional: show feedback
         if (feedbackText != null)
-        {
-            feedbackText.text = "Additional letters revealed!";
-        }
+            feedbackText.text = $"Revealed a random letter: {letterToReveal}";
     }
+
 
 }
