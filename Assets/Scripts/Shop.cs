@@ -98,7 +98,7 @@ public class Shop : MonoBehaviour
         UpdateText();
     }
 
-    void UpdateText()
+    public void UpdateText()
     {
         moneyTextMain.text = "Money: $" + money;
         moneyTextWorld.text = moneyTextMain.text;

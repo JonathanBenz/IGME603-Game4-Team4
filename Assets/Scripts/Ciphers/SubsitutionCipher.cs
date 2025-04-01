@@ -7,7 +7,10 @@ public class SubstitutionPuzzleManager : MonoBehaviour
 {
 
     [SerializeField] public Transform symbolGridParent;
-
+    [SerializeField] private Shop shop;
+    [SerializeField]
+    private string[] extraPhrases = {
+    };
 
     [Header("Puzzle Settings")]
     [Tooltip("List of multiple secret phrases to solve in sequence.")]
@@ -144,10 +147,11 @@ public class SubstitutionPuzzleManager : MonoBehaviour
         // Build the player's full decryption of the current scrambled phrase
         string userDecrypted = DecryptWithPlayerGuess(currentScrambledPhrase);
         // The correct plain text
-        string actualPhrase = secretPhrases[currentPhraseIndex];
+        string cleaned = userDecrypted.Replace("<mspace=30>", "").Replace("</mspace>", "");
 
+        string actualPhrase = secretPhrases[currentPhraseIndex];
+        bool matches = cleaned.Equals(actualPhrase, System.StringComparison.OrdinalIgnoreCase);
         // Compare ignoring case
-        bool matches = userDecrypted.Equals(actualPhrase, System.StringComparison.OrdinalIgnoreCase);
         if (matches)
         {
             // Reveal all letter mappings from this phrase so the user��s cipher knowledge grows
@@ -356,6 +360,11 @@ public class SubstitutionPuzzleManager : MonoBehaviour
     {
         if (IsCipherFullyKnown())
         {
+            if (shop != null)
+            {
+                shop.money += 100;
+                shop.UpdateText(); // Refresh UI in the Shop
+            }
             if (feedbackText != null)
                 feedbackText.text = "All letters discovered! Cipher complete.";
         }
@@ -431,6 +440,7 @@ public class SubstitutionPuzzleManager : MonoBehaviour
                     (value) => OnMappingChanged(index, value));
             }
         }
+        RevealPreFilledLetters();
 
         // 4) Re-encrypt *the current puzzle* with the new cipher
         if (currentPhraseIndex < secretPhrases.Length)
@@ -511,5 +521,108 @@ public class SubstitutionPuzzleManager : MonoBehaviour
             }
         }
     }
+    public void AddSingleExtraPhrase()
+    {
+        // 1) If no extra phrases remain, do nothing or show a message
+        if (extraPhrases == null || extraPhrases.Length == 0)
+        {
+            if (feedbackText != null)
+                feedbackText.text = "No more extra phrases available.";
+            return;
+        }
+
+        // 2) Convert extraPhrases to a List so we can remove from it
+        List<string> extraList = new List<string>(extraPhrases);
+
+        // 3) Pick one phrase from the extra list
+        //    a) Random pick
+        System.Random rand = new System.Random();
+        int r = rand.Next(0, extraList.Count);
+        string chosenPhrase = extraList[r];
+
+
+
+        // 4) Remove that phrase from the extraList so it isn’t added again
+        extraList.RemoveAt(r);
+
+        // 5) Update extraPhrases array to reflect that removal
+        extraPhrases = extraList.ToArray();
+
+        // 6) Append the chosen phrase to secretPhrases
+        List<string> secretList = new List<string>(secretPhrases);
+        secretList.Add(chosenPhrase);
+        secretPhrases = secretList.ToArray();
+
+
+        // 8) Show feedback
+        if (feedbackText != null)
+        {
+            feedbackText.text = $"Extra phrase added: {chosenPhrase}";
+        }
+
+        Debug.Log($"Appended extra phrase: {chosenPhrase}");
+    }
+
+
+
+    public void RevealRandomUnknownLetter()
+    {
+
+        List<char> unrevealedPlainLetters = new List<char>();
+        for (char plain = 'A'; plain <= 'Z'; plain++)
+        {
+            // If the cipher maps this plain letter to some scrambled letter
+            if (encryptMap.ContainsKey(plain))
+            {
+                char scrambled = encryptMap[plain];
+
+                // Check if the player's guess for that scrambled letter is still unknown
+                if (playerGuessMap[scrambled] == '_' || playerGuessMap[scrambled] == '-')
+                {
+                    unrevealedPlainLetters.Add(plain);
+                }
+            }
+        }
+
+        // 2) If everything is already revealed, there's nothing to reveal!
+        if (unrevealedPlainLetters.Count == 0)
+        {
+            if (feedbackText != null)
+                feedbackText.text = "No unknown letters remain to reveal!";
+            return;
+        }
+
+        // 3) Pick ONE random letter from the list
+        System.Random rand = new System.Random();
+        int randomIndex = rand.Next(unrevealedPlainLetters.Count);
+        char letterToReveal = unrevealedPlainLetters[randomIndex]; 
+
+        // 4) Reveal that letter: find its scrambled version and fill in the guess map
+        char scrambledLetter = encryptMap[letterToReveal];
+
+        // Update the guess map with the real plain letter
+        playerGuessMap[scrambledLetter] = letterToReveal;
+
+        // Update the corresponding InputField in the UI
+        int fieldIndex = scrambledLetter - 'A';
+        if (fieldIndex >= 0 && fieldIndex < letterMappingInputs.Length)
+        {
+            letterMappingInputs[fieldIndex].text = letterToReveal.ToString();
+
+            // Color it green, since it's a "correct reveal"
+            var img = letterMappingInputs[fieldIndex].GetComponent<UnityEngine.UI.Image>();
+            if (img != null)
+            {
+                img.color = Color.green;
+            }
+        }
+
+        // 5) Refresh partial text to reflect the newly revealed letter
+        UpdatePartialDecryption();
+
+        if (feedbackText != null)
+            feedbackText.text = $"Revealed a random letter: {letterToReveal}";
+    }
+
 
 }

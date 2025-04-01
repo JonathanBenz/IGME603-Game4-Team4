@@ -12044,7 +12044,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -2.2211304, y: 0, z: -0.5932465, w: 1.1781139}
+  m_margin: {x: -271.33762, y: 0, z: -656.0712, w: 1.1781139}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -15797,6 +15797,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   symbolGridParent: {fileID: 1789204815}
+  shop: {fileID: 106750493}
+  extraPhrases:
+  - Crikey
+  - Good on ya
+  - Every steak Every time
+  - Steak As It Was Meant To Be
+  - Im loving it
+  - Eat fresh
+  - We have the meats
+  - No one outpizzas the hut
+  - Its finger lickin good
   secretPhrases:
   - Go Outback
   - Crave on
@@ -15818,7 +15829,7 @@ MonoBehaviour:
   - Bold and Wild
   - Bold at Steak
   - Take a holiday from the ordinary
-  preRevealedPlainLetters: 54004f004b00
+  preRevealedPlainLetters: 54004f004b00420043005200
   encryptedText: {fileID: 1625777082}
   partialDecryptedText: {fileID: 920395736}
   feedbackText: {fileID: 2093617986}
@@ -22717,7 +22728,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -1.0999603, y: 0, z: -0.59324646, w: 1.1781139}
+  m_margin: {x: -270.7069, y: 0, z: -659.6514, w: 1.1781139}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -26780,6 +26791,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 106750493}
+        m_TargetAssemblyTypeName: Shop, Assembly-CSharp
+        m_MethodName: DeductMoney
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 20
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1956358036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26904,18 +26927,6 @@ MonoBehaviour:
       - m_Target: {fileID: 1106677948}
         m_TargetAssemblyTypeName: SubstitutionPuzzleManager, Assembly-CSharp
         m_MethodName: OnCheckSolution
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1106677948}
-        m_TargetAssemblyTypeName: SubstitutionPuzzleManager, Assembly-CSharp
-        m_MethodName: OnRequestNewCipher
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
