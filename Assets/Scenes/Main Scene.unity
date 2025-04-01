@@ -14885,6 +14885,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   symbolGridParent: {fileID: 1789204815}
   shop: {fileID: 106750493}
+  extraPhrases:
+  - Crikey
+  - Good on ya
+  - Every steak Every time
+  - Steak As It Was Meant To Be
+  - Im loving it
+  - Eat fresh
+  - We have the meats
+  - No one outpizzas the hut
+  - Its finger lickin good
   secretPhrases:
   - Go Outback
   - Crave on

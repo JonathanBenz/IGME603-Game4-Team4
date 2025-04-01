@@ -8,6 +8,9 @@ public class SubstitutionPuzzleManager : MonoBehaviour
 
     [SerializeField] public Transform symbolGridParent;
     [SerializeField] private Shop shop;
+    [SerializeField]
+    private string[] extraPhrases = {
+    };
 
     [Header("Puzzle Settings")]
     [Tooltip("List of multiple secret phrases to solve in sequence.")]
@@ -518,40 +521,50 @@ public class SubstitutionPuzzleManager : MonoBehaviour
             }
         }
     }
-    /// <summary>
-    /// Appends new phrases to the existing secretPhrases array.
-    /// Optionally reloads the current puzzle if desired.
-    /// </summary>
-    public void AddNewPhrases(string[] newPhrases)
+    public void AddSingleExtraPhrase()
     {
-        // Convert the existing array to a list
-        List<string> phraseList = new List<string>(secretPhrases);
-
-        // Add all the new phrases
-        phraseList.AddRange(newPhrases);
-
-        // Convert back to an array
-        secretPhrases = phraseList.ToArray();
-
-        // If you want to reset or just ensure we load 
-        // the next phrase if we haven't finished:
-        if (currentPhraseIndex < secretPhrases.Length)
+        // 1) If no extra phrases remain, do nothing or show a message
+        if (extraPhrases == null || extraPhrases.Length == 0)
         {
-            // Reload the current phrase or do nothing. 
-            // This line will reload the puzzle phrase you’re on:
-            LoadCurrentPhrase();
-        }
-        else
-        {
-            currentPhraseIndex = secretPhrases.Length - newPhrases.Length;
-            LoadCurrentPhrase();
+            if (feedbackText != null)
+                feedbackText.text = "No more extra phrases available.";
+            return;
         }
 
+        // 2) Convert extraPhrases to a List so we can remove from it
+        List<string> extraList = new List<string>(extraPhrases);
+
+        // 3) Pick one phrase from the extra list
+        //    a) Random pick
+        System.Random rand = new System.Random();
+        int r = rand.Next(0, extraList.Count);
+        string chosenPhrase = extraList[r];
+
+
+
+        // 4) Remove that phrase from the extraList so it isn’t added again
+        extraList.RemoveAt(r);
+
+        // 5) Update extraPhrases array to reflect that removal
+        extraPhrases = extraList.ToArray();
+
+        // 6) Append the chosen phrase to secretPhrases
+        List<string> secretList = new List<string>(secretPhrases);
+        secretList.Add(chosenPhrase);
+        secretPhrases = secretList.ToArray();
+
+
+        // 8) Show feedback
         if (feedbackText != null)
         {
-            feedbackText.text = "New phrases added!";
+            feedbackText.text = $"Extra phrase added: {chosenPhrase}";
         }
+
+        Debug.Log($"Appended extra phrase: {chosenPhrase}");
     }
+
+
+
     /// <summary>
     /// Reveals the provided letters in the current cipher,
     /// so the player sees them as already solved.
