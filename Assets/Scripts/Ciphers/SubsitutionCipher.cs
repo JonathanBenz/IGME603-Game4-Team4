@@ -7,7 +7,7 @@ public class SubstitutionPuzzleManager : MonoBehaviour
 {
 
     [SerializeField] public Transform symbolGridParent;
-
+    [SerializeField] private Shop shop;
 
     [Header("Puzzle Settings")]
     [Tooltip("List of multiple secret phrases to solve in sequence.")]
@@ -144,10 +144,11 @@ public class SubstitutionPuzzleManager : MonoBehaviour
         // Build the player's full decryption of the current scrambled phrase
         string userDecrypted = DecryptWithPlayerGuess(currentScrambledPhrase);
         // The correct plain text
-        string actualPhrase = secretPhrases[currentPhraseIndex];
+        string cleaned = userDecrypted.Replace("<mspace=30>", "").Replace("</mspace>", "");
 
+        string actualPhrase = secretPhrases[currentPhraseIndex];
+        bool matches = cleaned.Equals(actualPhrase, System.StringComparison.OrdinalIgnoreCase);
         // Compare ignoring case
-        bool matches = userDecrypted.Equals(actualPhrase, System.StringComparison.OrdinalIgnoreCase);
         if (matches)
         {
             // Reveal all letter mappings from this phrase so the user��s cipher knowledge grows
@@ -356,6 +357,11 @@ public class SubstitutionPuzzleManager : MonoBehaviour
     {
         if (IsCipherFullyKnown())
         {
+            if (shop != null)
+            {
+                shop.money += 100;
+                shop.UpdateText(); // Refresh UI in the Shop
+            }
             if (feedbackText != null)
                 feedbackText.text = "All letters discovered! Cipher complete.";
         }
@@ -431,6 +437,7 @@ public class SubstitutionPuzzleManager : MonoBehaviour
                     (value) => OnMappingChanged(index, value));
             }
         }
+        RevealPreFilledLetters();
 
         // 4) Re-encrypt *the current puzzle* with the new cipher
         if (currentPhraseIndex < secretPhrases.Length)
