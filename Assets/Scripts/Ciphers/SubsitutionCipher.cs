@@ -553,14 +553,6 @@ public class SubstitutionPuzzleManager : MonoBehaviour
         List<string> secretList = new List<string>(secretPhrases);
         secretList.Add(chosenPhrase);
         secretPhrases = secretList.ToArray();
-
-
-        // 8) Show feedback
-        if (feedbackText != null)
-        {
-            feedbackText.text = $"Extra phrase added: {chosenPhrase}";
-        }
-
         Debug.Log($"Appended extra phrase: {chosenPhrase}");
     }
 
