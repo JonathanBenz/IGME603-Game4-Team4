@@ -518,5 +518,92 @@ public class SubstitutionPuzzleManager : MonoBehaviour
             }
         }
     }
+    /// <summary>
+    /// Appends new phrases to the existing secretPhrases array.
+    /// Optionally reloads the current puzzle if desired.
+    /// </summary>
+    public void AddNewPhrases(string[] newPhrases)
+    {
+        // Convert the existing array to a list
+        List<string> phraseList = new List<string>(secretPhrases);
+
+        // Add all the new phrases
+        phraseList.AddRange(newPhrases);
+
+        // Convert back to an array
+        secretPhrases = phraseList.ToArray();
+
+        // If you want to reset or just ensure we load 
+        // the next phrase if we haven't finished:
+        if (currentPhraseIndex < secretPhrases.Length)
+        {
+            // Reload the current phrase or do nothing. 
+            // This line will reload the puzzle phrase you’re on:
+            LoadCurrentPhrase();
+        }
+        else
+        {
+            // If we were out of phrases, now we have more!
+            // So let's load the next one:
+            currentPhraseIndex = secretPhrases.Length - newPhrases.Length;
+            LoadCurrentPhrase();
+        }
+
+        // Optional: update feedback text
+        if (feedbackText != null)
+        {
+            feedbackText.text = "New phrases added!";
+        }
+    }
+    /// <summary>
+    /// Reveals the provided letters in the current cipher,
+    /// so the player sees them as already solved.
+    /// </summary>
+    public void RevealMoreLetters(char[] lettersToReveal)
+    {
+        foreach (char letter in lettersToReveal)
+        {
+            char upper = char.ToUpper(letter);
+            if (upper >= 'A' && upper <= 'Z')
+            {
+                // Only reveal if we have that letter in our cipher
+                if (encryptMap.ContainsKey(upper))
+                {
+                    // e.g. if encryptMap[upper] = scrambledLetter
+                    char scrambledLetter = encryptMap[upper];
+
+                    // Fill it in if not already revealed
+                    if (playerGuessMap[scrambledLetter] == '_' ||
+                        playerGuessMap[scrambledLetter] == '-')
+                    {
+                        playerGuessMap[scrambledLetter] = upper;
+
+                        // Update the grid UI
+                        int index = scrambledLetter - 'A';
+                        if (index >= 0 && index < letterMappingInputs.Length)
+                        {
+                            letterMappingInputs[index].text = upper.ToString();
+
+                            // Color the tile green, since it's correct
+                            var img = letterMappingInputs[index].GetComponent<UnityEngine.UI.Image>();
+                            if (img != null)
+                            {
+                                img.color = Color.green;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Refresh partial text to reflect newly revealed letters
+        UpdatePartialDecryption();
+
+        // Optional: show feedback
+        if (feedbackText != null)
+        {
+            feedbackText.text = "Additional letters revealed!";
+        }
+    }
 
 }
