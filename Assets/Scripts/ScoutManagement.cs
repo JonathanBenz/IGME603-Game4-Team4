@@ -8,6 +8,7 @@ public class ScoutManagement : MonoBehaviour
 
     public bool isOnTheWay;
     public int requiredDays;
+    Clock mainClock;
 
     public static ScoutManagement Instance { get; private set; }
 
@@ -15,7 +16,15 @@ public class ScoutManagement : MonoBehaviour
     {
 
         if (Instance == null) { Instance = this; }
-
+        mainClock = FindObjectOfType<Clock>(); // the first found clock will be the main one
+    }
+    private void OnEnable()
+    {
+        mainClock.NewDay.AddListener(ScoutsWorking);
+    }
+    private void OnDisable()
+    {
+        mainClock.NewDay.RemoveListener(ScoutsWorking);
     }
 
     // Start is called before the first frame update
