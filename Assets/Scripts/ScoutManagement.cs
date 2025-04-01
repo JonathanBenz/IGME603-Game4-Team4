@@ -1,14 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class ScoutManagement : MonoBehaviour
 {
     SubstitutionPuzzleManager substitutionPuzzleManager;
 
-    public bool isOnTheWay;
-    public int requiredDays;
+    //public bool isOnTheWay;
+    //public int requiredDays;
     Clock mainClock;
+    Dictionary<Pin, int> occupiedPins;
 
     public static ScoutManagement Instance { get; private set; }
 
@@ -31,17 +33,23 @@ public class ScoutManagement : MonoBehaviour
     void Start()
     {
         substitutionPuzzleManager = FindObjectOfType<SubstitutionPuzzleManager>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        occupiedPins = new Dictionary<Pin, int>();
     }
 
     public void ScoutsWorking()
     {
-       if(!isOnTheWay) return;
+        foreach(Pin key in occupiedPins.Keys.ToList())
+        {
+            occupiedPins[key]--;
+            Debug.Log("Pin: " + key.gameObject.name + " ,Days Left: " + occupiedPins[key]);
+            // Expedition is complete. Add phrase, reset pin
+            if(key.IsOccupied && occupiedPins[key] <= 0)
+            {
+                substitutionPuzzleManager.AddSingleExtraPhrase();
+                key.Reset();
+            }
+        }
+       /*if(!isOnTheWay) return;
 
         if (requiredDays > 0)
         {
@@ -53,7 +61,11 @@ public class ScoutManagement : MonoBehaviour
             substitutionPuzzleManager.AddSingleExtraPhrase();
             Debug.Log("Days left222: " + requiredDays);
             isOnTheWay = false;
-        }
+        }*/
+    }
 
+    public void AddOccupiedPin(Pin pin, int difficulty)
+    {
+        occupiedPins[pin] = difficulty;
     }
 }

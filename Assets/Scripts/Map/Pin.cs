@@ -10,6 +10,7 @@ public class Pin : MonoBehaviour
     [SerializeField] SOPinLocation locationInfo;
     [SerializeField] GameObject mapLineGO;
     GameObject pinLight;
+    GameObject pinMapLine;
     PopUp popUp;
     int difficultyLevel;
     static bool popUpActive; // static so that it applies across all pins
@@ -19,6 +20,7 @@ public class Pin : MonoBehaviour
     private ScoutManagement scoutManagement;
     public int DifficultyLevel { get { return difficultyLevel; } }
     public bool PopUpActive { set { popUpActive = value; } }
+    public bool IsOccupied { get { return isOccupied; } }
 
     private void Awake()
     {
@@ -70,27 +72,35 @@ public class Pin : MonoBehaviour
     /// <summary>
     /// If the player sends scouts to this pin, set as occupied and draw a line to the pin.
     /// </summary>
-    public void SetAsOccupied(int numScoutsSent)
+    public void SetAsOccupied(int numScoutsSent, int onions)
     {
         Transform baseTransform = FindObjectOfType<HomeBase>().transform;
         Vector3 basePosition = baseTransform.GetComponent<RectTransform>().position;
         //Vector3 basePosition = baseTransform.TransformPoint(Vector3.zero);
 
-        GameObject line = Instantiate(mapLineGO, basePosition, Quaternion.identity, baseTransform.parent);
+        pinMapLine = Instantiate(mapLineGO, basePosition, Quaternion.identity, baseTransform.parent);
         Vector3 lengthBetween = (Vector3)this.transform.GetComponent<RectTransform>().position - basePosition;
         //Vector3 lengthBetween = this.transform.TransformPoint(Vector3.zero) - basePosition;
-        line.GetComponent<MapLine>().SetLine(lengthBetween);
+        pinMapLine.GetComponent<MapLine>().SetLine(lengthBetween);
         isOccupied = true;
         numScoutsSentToPin = numScoutsSent;
         //shop.kangaroos -= numScoutsSentToPin;
         shop.DecrementKangaroo(numScoutsSent);
 
-        scoutManagement.requiredDays = difficultyLevel - numScoutsSent;
-        if (difficultyLevel <= numScoutsSent)
-        {
-            scoutManagement.requiredDays = 1;
-        }
-        scoutManagement.isOnTheWay = true;
+        //scoutManagement.requiredDays = difficultyLevel - numScoutsSent;
+        int difficultyMitigation = numScoutsSent + (int)(0.5 * onions);
+        if (difficultyLevel <= difficultyMitigation) difficultyLevel = 1;
+        scoutManagement.AddOccupiedPin(this, difficultyLevel);
+    }
+
+    /// <summary>
+    /// Once an expedition is complete, reset the pin to be used again.
+    /// </summary>
+    public void Reset()
+    {
+        isOccupied = false;
+        difficultyLevel = CalculateRandomDifficulty();
+        Destroy(pinMapLine);
     }
 
     private int CalculateRandomDifficulty()
