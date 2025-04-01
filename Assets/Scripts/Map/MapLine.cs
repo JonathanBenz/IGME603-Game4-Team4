@@ -12,6 +12,11 @@ public class MapLine : MonoBehaviour
     Vector2 targetCanvasPosition;
     CanvasScaler canvasScaler;
 
+    void IncrementKangaroo()
+    {
+
+    }
+
     public float Width { get { return width; } }
 
     private void Awake()

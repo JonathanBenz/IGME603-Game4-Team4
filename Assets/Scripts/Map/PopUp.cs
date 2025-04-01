@@ -70,7 +70,7 @@ public class PopUp : MonoBehaviour
     public void SendTeamButtonPressed()
     {
         if (kangaroos == 0) { ExitPopUp(); return; }
-        shop.bloominOnions -= bloominOnions;
+        shop.DecrementOnion(bloominOnions);
         lastActivePin.SetAsOccupied(kangaroos);
         ExitPopUp();
     }

@@ -80,7 +80,8 @@ public class Pin : MonoBehaviour
         line.GetComponent<MapLine>().SetLine(lengthBetween);
         isOccupied = true;
         numScoutsSentToPin = numScoutsSent;
-        shop.kangaroos -= numScoutsSentToPin;
+        //shop.kangaroos -= numScoutsSentToPin;
+        shop.DecrementKangaroo(numScoutsSent);
     }
 
     private int CalculateRandomDifficulty()

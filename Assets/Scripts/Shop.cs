@@ -22,6 +22,11 @@ public class Shop : MonoBehaviour
     //public TMP_Text bloominOnionText;
     //public TMP_Text foodWaterText;
 
+    public Transform kangarooLayoutGroup;
+    public GameObject kangarooImg;
+    public Transform onionLayoutGroup;
+    public GameObject onionImg;
+
     public Dictionary<string, int> shopItems = new Dictionary<string, int>();
 
     void Start()
@@ -32,7 +37,8 @@ public class Shop : MonoBehaviour
         shopItems.Add("Bloomin' Onions", 5);
         //shopItems.Add("Shovel", 5);
         //shopItems.Add("Food/Water", 5);
-        
+        Instantiate(kangarooImg, kangarooLayoutGroup); // Start with 1 kangaroo
+        Instantiate(onionImg, onionLayoutGroup); // Start with 1 bloomin' onion
     }
 
     public void BuyItem(string itemName)
@@ -48,7 +54,7 @@ public class Shop : MonoBehaviour
                     Debug.Log("Kangaroo cap limit already reached. Cannot buy anymore.");
                     return;
                 }
-                if (item.Key.Equals("Bloomin' Onions") && kangaroos >= 6)
+                if (item.Key.Equals("Bloomin' Onions") && bloominOnions >= 6)
                 {
                     Debug.Log("Bloomin' Onions cap limit already reached. Cannot buy anymore.");
                     return;
@@ -122,11 +128,33 @@ public class Shop : MonoBehaviour
     {
         if (kangaroos >= 3) return; // Don't allow more than 3 kangaroos at a time
         kangaroos++;
+        Instantiate(kangarooImg, kangarooLayoutGroup);
     }
 
     void BuyOnion()
     {
         if (bloominOnions >= 6) return; // Don't allow more than 6 onions at a time
         bloominOnions++;
+        Instantiate(onionImg, onionLayoutGroup);
+    }
+
+    public void DecrementKangaroo(int kangs)
+    {
+        kangaroos -= kangs;
+        int kangarooImagesCount = kangarooLayoutGroup.childCount;
+        for(int i = kangarooImagesCount; i > kangarooImagesCount - kangs; i--)
+        {
+            Destroy(kangarooLayoutGroup.GetChild(i-1).gameObject);
+        }
+    }
+
+    public void DecrementOnion(int onions)
+    {
+        bloominOnions -= onions;
+        int onionImagesCount = onionLayoutGroup.childCount;
+        for (int i = onionImagesCount; i > onionImagesCount - onions; i--)
+        {
+            Destroy(onionLayoutGroup.GetChild(i - 1).gameObject);
+        }
     }
 }

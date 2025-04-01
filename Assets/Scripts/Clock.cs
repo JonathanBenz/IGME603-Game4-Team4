@@ -16,6 +16,10 @@ public class Clock : MonoBehaviour
     TMP_Text dayPassedText;
     Shop shop;
 
+    private void OnDisable()
+    {
+        dayPassedTextGO.SetActive(false);
+    }
     private void Awake()
     {
         clockImg = GetComponent<Image>();
