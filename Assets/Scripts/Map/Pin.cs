@@ -16,7 +16,7 @@ public class Pin : MonoBehaviour
     bool isOccupied;
     int numScoutsSentToPin;
     Shop shop;
-
+    private ScoutManagement scoutManagement;
     public int DifficultyLevel { get { return difficultyLevel; } }
     public bool PopUpActive { set { popUpActive = value; } }
 
@@ -28,6 +28,8 @@ public class Pin : MonoBehaviour
     }
     private void Start()
     {
+        scoutManagement = ScoutManagement.Instance;
+
         pinLight.SetActive(false);
         difficultyLevel = CalculateRandomDifficulty();
         popUp.gameObject.SetActive(false);
@@ -82,6 +84,13 @@ public class Pin : MonoBehaviour
         numScoutsSentToPin = numScoutsSent;
         //shop.kangaroos -= numScoutsSentToPin;
         shop.DecrementKangaroo(numScoutsSent);
+
+        scoutManagement.requiredDays = difficultyLevel - numScoutsSent;
+        if (difficultyLevel <= numScoutsSent)
+        {
+            scoutManagement.requiredDays = 1;
+        }
+        scoutManagement.isOnTheWay = true;
     }
 
     private int CalculateRandomDifficulty()

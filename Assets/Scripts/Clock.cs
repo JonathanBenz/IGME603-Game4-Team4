@@ -24,6 +24,8 @@ public class Clock : MonoBehaviour
 
     public UnityEvent NewDay;
 
+    private ScoutManagement scoutManagement;
+
     private void OnDisable()
     {
         dayPassedTextGO.SetActive(false);
@@ -38,6 +40,8 @@ public class Clock : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        scoutManagement = ScoutManagement.Instance;
+
         clockImg.fillAmount = 0f;
         dayPassedTextGO.SetActive(false);
 
