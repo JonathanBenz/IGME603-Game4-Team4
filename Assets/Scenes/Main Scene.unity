@@ -15273,6 +15273,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1376107517}
+        m_TargetAssemblyTypeName: Clock, Assembly-CSharp
+        m_MethodName: StartClock
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1099001823
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17973,6 +17985,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: -8, y: -5, z: -8, w: -5}
   m_Softness: {x: 0, y: 0}
+--- !u!114 &1376107517 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2835186367668404559, guid: 8ddee8e9f5c720349a8949a6d3240e35, type: 3}
+  m_PrefabInstance: {fileID: 1095168223}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b6621cdab14064e920093154b05bcb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1385383491
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,6 +16,7 @@ public class Clock : MonoBehaviour
     TMP_Text dayPassedText;
     Shop shop;
 
+    public bool canStart;
     [SerializeField] bool isMainClock;
     Clock mainClock;
     Image mainClockImage;
@@ -53,6 +54,7 @@ public class Clock : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!canStart) return; // WAIT until player is done reading tutorial !!
         if (clockImg.fillAmount >= 1) ResetClock();
 
         // Synchronize the World clock to the Main clock
@@ -80,6 +82,15 @@ public class Clock : MonoBehaviour
         // Prevent any clock from calling this function unless it is the Main Clock!!
         if (!isMainClock) return;
         shop.DeductMoney(amountToDeduct);
+    }
+
+    /// <summary>
+    /// When the player exits the tutorial, this event is called to start the timers
+    /// </summary>
+    public void StartClock()
+    {
+        mainClock.canStart = true;
+        this.canStart = true;
     }
 
     /// <summary>
