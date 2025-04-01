@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class SubstitutionPuzzleManager : MonoBehaviour
 {
+    [SerializeField] private TMP_Text missingLettersText;
 
     [SerializeField] public Transform symbolGridParent;
     [SerializeField] private Shop shop;
@@ -190,7 +191,7 @@ public class SubstitutionPuzzleManager : MonoBehaviour
 
         // Update guess map
         playerGuessMap[scrambledLetter] = guessedChar;
-
+        UpdateMissingLettersDisplay();
 
         // Refresh partial decryption
         UpdatePartialDecryption();
@@ -624,5 +625,39 @@ public class SubstitutionPuzzleManager : MonoBehaviour
             feedbackText.text = $"Revealed a random letter: {letterToReveal}";
     }
 
+    private void UpdateMissingLettersDisplay()
+    {
+        if (missingLettersText == null) return;  // If no text assigned, do nothing.
+
+        List<char> missing = new List<char>();
+
+        // For each PLAIN letter from A..Z, see if it's been guessed
+        for (char plain = 'A'; plain <= 'Z'; plain++)
+        {
+            // If our cipher maps this plain letter to a scrambled letter...
+            if (encryptMap.ContainsKey(plain))
+            {
+                char scrambled = encryptMap[plain];
+                // Check if the player's guess for that scrambled letter is still unknown
+                char guess = playerGuessMap[scrambled];
+                if (guess == '-' || guess == '_')
+                {
+                    // This means the user hasn't discovered (guessed) that letter yet
+                    missing.Add(plain);
+                }
+            }
+        }
+
+        // Format the text
+        if (missing.Count == 0)
+        {
+            missingLettersText.text = "No missing letters (all solved)!";
+        }
+        else
+        {
+            // Join them like "Missing letters: A, M, X, Y"
+            missingLettersText.text = "Missing letters: " + string.Join(", ", missing);
+        }
+    }
 
 }
