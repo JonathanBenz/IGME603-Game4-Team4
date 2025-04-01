@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Events;
 
 /// <summary>
 /// This script controls the clock UI element and is responsible for handling when a day passes.
@@ -20,6 +21,8 @@ public class Clock : MonoBehaviour
     [SerializeField] bool isMainClock;
     Clock mainClock;
     Image mainClockImage;
+
+    public UnityEvent NewDay;
 
     private void OnDisable()
     {
@@ -78,6 +81,7 @@ public class Clock : MonoBehaviour
     {
         //TODO: update map progress
         StartCoroutine(DayPassedTextAnim());
+        NewDay.Invoke();
 
         // Prevent any clock from calling this function unless it is the Main Clock!!
         if (!isMainClock) return;
