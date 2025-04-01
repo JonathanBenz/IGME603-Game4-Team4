@@ -543,13 +543,10 @@ public class SubstitutionPuzzleManager : MonoBehaviour
         }
         else
         {
-            // If we were out of phrases, now we have more!
-            // So let's load the next one:
             currentPhraseIndex = secretPhrases.Length - newPhrases.Length;
             LoadCurrentPhrase();
         }
 
-        // Optional: update feedback text
         if (feedbackText != null)
         {
             feedbackText.text = "New phrases added!";
