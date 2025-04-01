@@ -16,6 +16,10 @@ public class Clock : MonoBehaviour
     TMP_Text dayPassedText;
     Shop shop;
 
+    [SerializeField] bool isMainClock;
+    Clock mainClock;
+    Image mainClockImage;
+
     private void OnDisable()
     {
         dayPassedTextGO.SetActive(false);
@@ -32,6 +36,18 @@ public class Clock : MonoBehaviour
     {
         clockImg.fillAmount = 0f;
         dayPassedTextGO.SetActive(false);
+
+        // If this instance of the clock is not the main one, retrieve a reference to the main clock
+        if (!isMainClock)
+        {
+            Clock[] clocks = FindObjectsOfType<Clock>();
+            foreach(Clock clock in clocks)
+            {
+                // The clock that is not this one must be the main one
+                if (clock != this) { mainClock = clock; break; }
+            }
+            mainClockImage = mainClock.GetComponent<Image>();
+        }
     }
 
     // Update is called once per frame
@@ -39,7 +55,9 @@ public class Clock : MonoBehaviour
     {
         if (clockImg.fillAmount >= 1) ResetClock();
 
-        clockImg.fillAmount += Time.deltaTime * clockSpeed;
+        // Synchronize the World clock to the Main clock
+        if (isMainClock) clockImg.fillAmount += Time.deltaTime * clockSpeed;
+        else if (!isMainClock) clockImg.fillAmount = mainClockImage.fillAmount;
     }
 
     /// <summary>
@@ -56,8 +74,11 @@ public class Clock : MonoBehaviour
     /// </summary>
     public void DayHasPassed()
     {
-        //TODO: Deduct resources, update map progress
+        //TODO: update map progress
         StartCoroutine(DayPassedTextAnim());
+
+        // Prevent any clock from calling this function unless it is the Main Clock!!
+        if (!isMainClock) return;
         shop.DeductMoney(amountToDeduct);
     }
 

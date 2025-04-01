@@ -29145,6 +29145,10 @@ PrefabInstance:
       propertyPath: clockSpeed
       value: 0.05
       objectReference: {fileID: 0}
+    - target: {fileID: 2835186367668404559, guid: 8ddee8e9f5c720349a8949a6d3240e35, type: 3}
+      propertyPath: isMainClock
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6086723766136024445, guid: 8ddee8e9f5c720349a8949a6d3240e35, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -25
