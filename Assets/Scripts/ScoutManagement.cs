@@ -18,7 +18,12 @@ public class ScoutManagement : MonoBehaviour
     {
 
         if (Instance == null) { Instance = this; }
-        mainClock = FindObjectOfType<Clock>(); // the first found clock will be the main one
+
+        Clock[] clocks = FindObjectsOfType<Clock>();
+        foreach (Clock c in clocks)
+        {
+            if (c.IsMain) mainClock = c;
+        }
     }
     private void OnEnable()
     {
@@ -41,7 +46,7 @@ public class ScoutManagement : MonoBehaviour
         foreach(Pin key in occupiedPins.Keys.ToList())
         {
             occupiedPins[key]--;
-            Debug.Log("Pin: " + key.gameObject.name + " ,Days Left: " + occupiedPins[key]);
+            Debug.Log("Pin: " + key.gameObject.name + ", Days Left: " + occupiedPins[key]);
             // Expedition is complete. Add phrase, reset pin
             if(key.IsOccupied && occupiedPins[key] <= 0)
             {

@@ -20,7 +20,11 @@ public class Advertisements : MonoBehaviour
         exitButton = GetComponentInChildren<Button>();
         exitButton.gameObject.SetActive(false);
 
-        clock = FindObjectOfType<Clock>();
+        Clock[] clocks = FindObjectsOfType<Clock>();
+        foreach(Clock c in clocks)
+        {
+            if (c.IsMain) clock = c;
+        }
     }
     private void OnEnable()
     {

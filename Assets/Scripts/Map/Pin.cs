@@ -15,7 +15,6 @@ public class Pin : MonoBehaviour
     int difficultyLevel;
     static bool popUpActive; // static so that it applies across all pins
     bool isOccupied;
-    int numScoutsSentToPin;
     Shop shop;
     private ScoutManagement scoutManagement;
     public int DifficultyLevel { get { return difficultyLevel; } }
@@ -72,7 +71,7 @@ public class Pin : MonoBehaviour
     /// <summary>
     /// If the player sends scouts to this pin, set as occupied and draw a line to the pin.
     /// </summary>
-    public void SetAsOccupied(int numScoutsSent, int onions)
+    public void SetAsOccupied(int numKangaroosSent, int onions)
     {
         Transform baseTransform = FindObjectOfType<HomeBase>().transform;
         Vector3 basePosition = baseTransform.GetComponent<RectTransform>().position;
@@ -81,16 +80,17 @@ public class Pin : MonoBehaviour
         pinMapLine = Instantiate(mapLineGO, basePosition, Quaternion.identity, baseTransform.parent);
         Vector3 lengthBetween = (Vector3)this.transform.GetComponent<RectTransform>().position - basePosition;
         //Vector3 lengthBetween = this.transform.TransformPoint(Vector3.zero) - basePosition;
-        pinMapLine.GetComponent<MapLine>().SetLine(lengthBetween);
         isOccupied = true;
-        numScoutsSentToPin = numScoutsSent;
         //shop.kangaroos -= numScoutsSentToPin;
-        shop.DecrementKangaroo(numScoutsSent);
+        shop.DecrementKangaroo(numKangaroosSent);
 
         //scoutManagement.requiredDays = difficultyLevel - numScoutsSent;
-        int difficultyMitigation = numScoutsSent + (int)(0.5 * onions);
-        if (difficultyLevel <= difficultyMitigation) difficultyLevel = 1;
+        int difficultyMitigation = numKangaroosSent - 1;
+        difficultyLevel -= difficultyMitigation;
+        if (difficultyLevel <= 1) difficultyLevel = 1;
         scoutManagement.AddOccupiedPin(this, difficultyLevel);
+
+        pinMapLine.GetComponent<MapLine>().SetLine(lengthBetween, difficultyLevel);
     }
 
     /// <summary>

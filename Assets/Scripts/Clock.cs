@@ -26,6 +26,9 @@ public class Clock : MonoBehaviour
 
     private ScoutManagement scoutManagement;
 
+    public bool IsMain { get { return isMainClock; } }
+    public float ClockSpeed { get { return clockSpeed; } }
+
     private void OnDisable()
     {
         dayPassedTextGO.SetActive(false);

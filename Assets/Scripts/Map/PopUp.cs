@@ -18,6 +18,8 @@ public class PopUp : MonoBehaviour
 
     int kangaroos;
     int bloominOnions;
+    int difficulty; // temp difficulty to be used to dynamically display new difficulty levels upon the player potentially sending or removing kangaroos
+    int startingDifficulty; // Hold reference to the initial difficulty
 
     bool cursorOutOfBounds;
     Shop shop;
@@ -44,7 +46,10 @@ public class PopUp : MonoBehaviour
         locationImg.sprite = locationInfo.image;
         locationNameText.text = locationInfo.locationName;
         blurbText.text = locationInfo.blurb;
-        difficultyText.text = "Difficulty: " + pin.DifficultyLevel.ToString();
+        startingDifficulty = pin.DifficultyLevel;
+        difficulty = startingDifficulty;
+        difficultyText.text = "Difficulty: " + difficulty.ToString();
+        SetDifficultyColor();
         numKangaroosText.text = "0";
         kangaroos = 0;
         numKangaroosText.color = Color.red;
@@ -52,6 +57,23 @@ public class PopUp : MonoBehaviour
         bloominOnions = 0;
         numBloominOnionsText.color = Color.red;
         lastActivePin = pin;
+    }
+
+    /// <summary>
+    /// Set difficulty text color as green if 1-2, yellow for 3-4, red for 5
+    /// </summary>
+    void SetDifficultyColor()
+    {
+        // Make sure difficulty never goes past its starting amount or below 1
+        if (difficulty <= 1) difficulty = 1;
+        if (difficulty >= startingDifficulty) difficulty = startingDifficulty;
+
+        // Change color based on projected difficulty
+        if (difficulty <= 2) difficultyText.color = Color.green;
+        else if (difficulty <= 4) difficultyText.color = Color.yellow;
+        else difficultyText.color = Color.red;
+
+        difficultyText.text = "Difficulty: " + difficulty.ToString();
     }
 
     public void OnPointerEnter()
@@ -76,29 +98,39 @@ public class PopUp : MonoBehaviour
         ExitPopUp();
     }
 
-    // Increases or Decreases scout number (to be used on Button Press)
-    public void IncreaseOrDecreaseScoutNumber(bool isIncreasing)
+    // Increases or Decreases kangaroo number (to be used on Button Press)
+    public void IncreaseOrDecreaseKangarooNumber(bool isIncreasing)
     {
         if (isIncreasing)
         {
             if (kangaroos >= shop.kangaroos) return;
-            if (shop.kangaroos >= 1) kangaroos++;
+            if (difficulty <= 1 && kangaroos > 0) return; // Don't let the player waste kangaroos if the pop-up is at lowest difficulty
+            if (kangaroos >= 1) difficulty--;
+
+            if (shop.kangaroos >= 1)
+            {
+                kangaroos++;
+            }
             numKangaroosText.color = Color.green;
         }
         else
         {
+            if (kangaroos > 0) difficulty++;
+
             kangaroos--;
             if (kangaroos <= 0)
             {
                 kangaroos = 0;
                 numKangaroosText.color = Color.red;
             }
+
         }
         numKangaroosText.text = kangaroos.ToString();
+        SetDifficultyColor();
     }
 
-    // Increases or Decreases shovel number (to be used on Button Press)
-    public void IncreaseOrDecreaseShovelNumber(bool isIncreasing)
+    // Increases or Decreases onion number (to be used on Button Press)
+    public void IncreaseOrDecreaseOnionNumber(bool isIncreasing)
     {
         if (isIncreasing)
         {

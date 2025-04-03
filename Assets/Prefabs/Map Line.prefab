@@ -89,3 +89,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   height: 5
+  kangarooImagePrefab: {fileID: 678023558742344344, guid: 5b55afd6a90c97549ab49a6b6b1469cd, type: 3}
