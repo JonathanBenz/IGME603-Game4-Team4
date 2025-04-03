@@ -13,6 +13,7 @@ public class Pin : MonoBehaviour
     GameObject pinMapLine;
     PopUp popUp;
     int difficultyLevel;
+    int numOfHits;
     static bool popUpActive; // static so that it applies across all pins
     bool isOccupied;
     Shop shop;
@@ -87,6 +88,16 @@ public class Pin : MonoBehaviour
         //scoutManagement.requiredDays = difficultyLevel - numScoutsSent;
         int difficultyMitigation = numKangaroosSent - 1;
         difficultyLevel -= difficultyMitigation;
+        // base on the number of onions sent, set the number of hits required to complete the expedition
+        if (onions <= 2)
+        {
+            numOfHits = 1;
+        }
+        else
+        {
+            numOfHits = onions - 2;
+        }
+        scoutManagement.hits = numOfHits;
         if (difficultyLevel <= 1) difficultyLevel = 1;
         scoutManagement.AddOccupiedPin(this, difficultyLevel);
 

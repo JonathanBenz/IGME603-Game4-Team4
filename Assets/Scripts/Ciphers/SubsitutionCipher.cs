@@ -376,7 +376,7 @@ public class SubstitutionPuzzleManager : MonoBehaviour
         {
             if (shop != null)
             {
-                shop.money += 100;
+                shop.money += 500;
                 shop.UpdateText(); // Refresh UI in the Shop
             }
             if (feedbackText != null)
