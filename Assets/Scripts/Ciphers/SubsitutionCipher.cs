@@ -153,15 +153,15 @@ public class SubstitutionPuzzleManager : MonoBehaviour
 
         string actualPhrase = secretPhrases[currentPhraseIndex];
         bool matches = cleaned.Equals(actualPhrase, System.StringComparison.OrdinalIgnoreCase);
-        // Compare ignoring case
+
         if (matches)
         {
-            // Reveal all letter mappings from this phrase so the user��s cipher knowledge grows
+            // Reveal all letter mappings from this phrase so the user’s cipher knowledge grows
             RevealAllLettersFromPhrase(actualPhrase);
 
             if (feedbackText != null)
                 feedbackText.text = "Correct! Moving to next phrase...";
-
+            shop.money += 50;
             // Move to the next phrase
             currentPhraseIndex++;
             LoadCurrentPhrase();
@@ -171,6 +171,9 @@ public class SubstitutionPuzzleManager : MonoBehaviour
             if (feedbackText != null)
                 feedbackText.text = "Not quite correct. Keep trying!";
         }
+
+        ApplyLetterColors();
+        UpdateMissingLettersDisplay();
     }
 
 
@@ -207,6 +210,7 @@ public class SubstitutionPuzzleManager : MonoBehaviour
         playerGuessMap[scrambledLetter] = guessedChar;
 
         UpdatePartialDecryption();
+        UpdateMissingLettersDisplay();
     }
 
 
@@ -372,6 +376,7 @@ public class SubstitutionPuzzleManager : MonoBehaviour
 
     public void OnCheckCipherComplete()
     {
+        bool allCorrect = IsCipherFullyKnown();
         if (IsCipherFullyKnown())
         {
             if (shop != null)
@@ -389,14 +394,23 @@ public class SubstitutionPuzzleManager : MonoBehaviour
         }
         ApplyLetterColors();
     }
-
     private bool IsCipherFullyKnown()
     {
-        for (char c = 'A'; c <= 'Z'; c++)
+        for (char scrambled = 'A'; scrambled <= 'Z'; scrambled++)
         {
-            if (playerGuessMap[c] == '-')
+            if (!decryptMap.ContainsKey(scrambled))
+                continue;
+
+            char correctPlain = decryptMap[scrambled];
+            char guessedPlain = playerGuessMap[scrambled];
+
+
+            if (guessedPlain == '-' || guessedPlain == '_' || guessedPlain != correctPlain)
+            {
                 return false;
+            }
         }
+
         return true;
     }
 
@@ -664,5 +678,6 @@ public class SubstitutionPuzzleManager : MonoBehaviour
             missingLettersText.text = "Missing letters: " + string.Join(", ", missing);
         }
     }
+
 
 }
