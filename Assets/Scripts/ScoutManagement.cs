@@ -11,6 +11,8 @@ public class ScoutManagement : MonoBehaviour
     //public int requiredDays;
     Clock mainClock;
     Dictionary<Pin, int> occupiedPins;
+    int randomNum;
+    public int hits;
 
     public static ScoutManagement Instance { get; private set; }
 
@@ -48,9 +50,21 @@ public class ScoutManagement : MonoBehaviour
             occupiedPins[key]--;
             Debug.Log("Pin: " + key.gameObject.name + ", Days Left: " + occupiedPins[key]);
             // Expedition is complete. Add phrase, reset pin
-            if(key.IsOccupied && occupiedPins[key] <= 0)
+            if (key.IsOccupied && occupiedPins[key] <= 0)
             {
-                substitutionPuzzleManager.AddSingleExtraPhrase();
+                for (int i = 0; i < hits; i++)
+                {
+                    randomNum = Random.Range(0, 2);
+                    switch (randomNum)
+                    {
+                        case 0:
+                            substitutionPuzzleManager.AddSingleExtraPhrase();
+                            break;
+                        case 1:
+                            substitutionPuzzleManager.RevealRandomUnknownLetter();
+                            break;
+                    }
+                }
                 key.Reset();
             }
         }
@@ -67,6 +81,7 @@ public class ScoutManagement : MonoBehaviour
             Debug.Log("Days left222: " + requiredDays);
             isOnTheWay = false;
         }*/
+
     }
 
     public void AddOccupiedPin(Pin pin, int difficulty)
