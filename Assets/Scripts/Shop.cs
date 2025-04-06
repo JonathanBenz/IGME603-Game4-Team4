@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
+using System;
 
 public class Shop : MonoBehaviour
 {
@@ -26,6 +27,7 @@ public class Shop : MonoBehaviour
     public GameObject kangarooImg;
     public Transform onionLayoutGroup;
     public GameObject onionImg;
+    public GameObject LosePanel;
 
     public Dictionary<string, int> shopItems = new Dictionary<string, int>();
 
@@ -102,6 +104,18 @@ public class Shop : MonoBehaviour
     private void Update()
     {
         UpdateText();
+
+        if(money <= 0)
+        {
+            LoseCondition();
+        }
+    }
+
+    private void LoseCondition()
+    {
+        LosePanel.SetActive(true);
+        LosePanel.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = 
+            "Game Over! \nYou ran out of coupon funds! \nWe have to take you out back and... \nNo more Bloomin' Onions for you!";
     }
 
     public void UpdateText()

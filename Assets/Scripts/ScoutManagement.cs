@@ -13,6 +13,7 @@ public class ScoutManagement : MonoBehaviour
     Dictionary<Pin, int> occupiedPins;
     int randomNum;
     public int hits;
+    public GameObject scoutReturnPanel;
 
     public static ScoutManagement Instance { get; private set; }
 
@@ -59,9 +60,11 @@ public class ScoutManagement : MonoBehaviour
                     {
                         case 0:
                             substitutionPuzzleManager.AddSingleExtraPhrase();
+                            StartCoroutine(ScoutReturnPanelPopUp(0));
                             break;
                         case 1:
                             substitutionPuzzleManager.RevealRandomUnknownLetter();
+                            StartCoroutine(ScoutReturnPanelPopUp(1));
                             break;
                     }
                 }
@@ -87,5 +90,17 @@ public class ScoutManagement : MonoBehaviour
     public void AddOccupiedPin(Pin pin, int difficulty)
     {
         occupiedPins[pin] = difficulty;
+    }
+
+    IEnumerator ScoutReturnPanelPopUp(int phraseOrLetter)
+    {
+        if (phraseOrLetter == 0)
+            scoutReturnPanel.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "Kangaroo Returned! +1 phrase!";
+        else if (phraseOrLetter == 1)
+            scoutReturnPanel.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "Kangaroo Returned! +1 Letter!";
+        
+        scoutReturnPanel.SetActive(true);
+        yield return new WaitForSeconds(3f);
+        scoutReturnPanel.SetActive(false);
     }
 }
