@@ -33,10 +33,11 @@ public class Shop : MonoBehaviour
 
     void Start()
     {
+        Time.timeScale = 1;
         UpdateText();
 
         shopItems.Add("Kangaroos", 20);
-        shopItems.Add("Bloomin' Onions", 5);
+        shopItems.Add("Bloomin' Onions", 50);
         //shopItems.Add("Shovel", 5);
         //shopItems.Add("Food/Water", 5);
         Instantiate(kangarooImg, kangarooLayoutGroup); // Start with 1 kangaroo
@@ -114,6 +115,7 @@ public class Shop : MonoBehaviour
     private void LoseCondition()
     {
         LosePanel.SetActive(true);
+        Time.timeScale = 0;
         LosePanel.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = 
             "Game Over! \nYou ran out of coupon funds! \nWe have to take you out back and... \nNo more Bloomin' Onions for you!";
     }
@@ -122,7 +124,7 @@ public class Shop : MonoBehaviour
     {
         moneyTextMain.text = "Money: $" + money;
         moneyTextWorld.text = moneyTextMain.text;
-        premiumMoneyTextMain.text = "Premium: " + premiumMoney;
+        premiumMoneyTextMain.text = $"Premium: {premiumMoney:D2}";
         premiumMoneyTextWorld.text = premiumMoneyTextMain.text;
 
         //availableScoutsText.text = "In: " + kangaroos;
@@ -170,5 +172,16 @@ public class Shop : MonoBehaviour
         {
             Destroy(onionLayoutGroup.GetChild(i - 1).gameObject);
         }
+    }
+
+    public void AddPremiumCurrency(int amount)
+    {
+        premiumMoney += amount;
+        UpdateText();
+    }
+    public void SpendPremiumCurrency(int amount)
+    {
+        premiumMoney -= amount;
+        UpdateText();
     }
 }

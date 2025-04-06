@@ -18,20 +18,6 @@ public class MapLine : MonoBehaviour
     GameObject kangarooInstance;
     int daysToTravel;
     bool returnToBase;
-
-    private void Update()
-    {
-        if (returnToBase) kangarooInstance.transform.localPosition -= new Vector3(2 * (width / daysToTravel) * clockSpeed * Time.deltaTime, 0f, 0f);
-        else kangarooInstance.transform.localPosition += new Vector3(2 * (width / daysToTravel) * clockSpeed * Time.deltaTime, 0f, 0f);
-
-        if (kangarooInstance.transform.localPosition.x >= width && !returnToBase)
-        {
-            returnToBase = true;
-            kangarooInstance.transform.right *= -1;
-            FlipSprite();
-        }
-    }
-
     public float Width { get { return width; } }
 
     private void Awake()
@@ -43,7 +29,25 @@ public class MapLine : MonoBehaviour
         Clock[] clocks = FindObjectsOfType<Clock>();
         foreach (Clock c in clocks)
         {
-            if (c.IsMain) { clockSpeed = c.ClockSpeed; startPos = c.GetComponent<Image>().fillAmount; print("StartPos: " + startPos); }
+            if (c.IsMain) 
+            { 
+                clockSpeed = c.ClockSpeed; 
+                startPos = c.GetComponent<Image>().fillAmount; 
+                print("StartPos: " + startPos); 
+            }
+        }
+    }
+
+    private void Update()
+    {
+        if (returnToBase) kangarooInstance.transform.localPosition -= new Vector3(2 * (width / daysToTravel) * clockSpeed * Time.deltaTime, 0f, 0f);
+        else kangarooInstance.transform.localPosition += new Vector3(2 * (width / daysToTravel) * clockSpeed * Time.deltaTime, 0f, 0f);
+
+        if (kangarooInstance.transform.localPosition.x >= width && !returnToBase)
+        {
+            returnToBase = true;
+            kangarooInstance.transform.right *= -1;
+            FlipSprite();
         }
     }
 

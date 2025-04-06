@@ -19,6 +19,7 @@ public class Pin : MonoBehaviour
     Shop shop;
     private ScoutManagement scoutManagement;
     public int DifficultyLevel { get { return difficultyLevel; } }
+    public int NumOfHits { get { return numOfHits; } }
     public bool PopUpActive { set { popUpActive = value; } }
     public bool IsOccupied { get { return isOccupied; } }
 
@@ -89,15 +90,16 @@ public class Pin : MonoBehaviour
         int difficultyMitigation = numKangaroosSent - 1;
         difficultyLevel -= difficultyMitigation;
         // base on the number of onions sent, set the number of hits required to complete the expedition
-        if (onions <= 2)
+        numOfHits = onions + 1; // For each onion, bring back a hint. If none, bring back 1 hint.
+        /*if (onions <= 2)
         {
             numOfHits = 1;
         }
         else
         {
             numOfHits = onions - 2;
-        }
-        scoutManagement.hits = numOfHits;
+        }*/
+        //scoutManagement.hits = numOfHits;
         if (difficultyLevel <= 1) difficultyLevel = 1;
         scoutManagement.AddOccupiedPin(this, difficultyLevel);
 

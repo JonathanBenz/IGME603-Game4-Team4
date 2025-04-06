@@ -12,7 +12,7 @@ public class ScoutManagement : MonoBehaviour
     Clock mainClock;
     Dictionary<Pin, int> occupiedPins;
     int randomNum;
-    public int hits;
+    // public int hits; // If each pin instance has their own num of hits, why are we using a global variable here?
     public GameObject scoutReturnPanel;
 
     public static ScoutManagement Instance { get; private set; }
@@ -53,7 +53,7 @@ public class ScoutManagement : MonoBehaviour
             // Expedition is complete. Add phrase, reset pin
             if (key.IsOccupied && occupiedPins[key] <= 0)
             {
-                for (int i = 0; i < hits; i++)
+                for (int i = 0; i < key.NumOfHits; i++)
                 {
                     randomNum = Random.Range(0, 2);
                     switch (randomNum)
